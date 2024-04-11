@@ -1,11 +1,15 @@
 package capston.busthecall.domain;
 
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Driver {
 
     @Id
@@ -18,4 +22,9 @@ public class Driver {
     @OneToOne(mappedBy = "driver")
     private Bus bus;
 
+    @Builder
+    public Driver(String name, Bus bus) {
+        this.name = name;
+        this.bus = bus;
+    }
 }
