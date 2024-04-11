@@ -1,21 +1,27 @@
 package capston.busthecall.domain;
 
-
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Builder
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class Driver {
 
-    @Id
+    @Id @Column(name = "driver_id")
     @GeneratedValue
-    @Column(name = "driver_id")
     private Long id;
 
     private String name;
+    private String email;
+    private String password;
+    private String role;
 
-    @OneToOne(mappedBy = "driver")
+    @OneToOne(mappedBy = "driver", fetch = FetchType.LAZY)
     private Bus bus;
-
 }

@@ -1,27 +1,22 @@
 package capston.busthecall.domain;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 public class Bus {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bus_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver")
     private Driver driver;
 
-    @OneToMany(mappedBy = "reservation")
-    private List<Reservation> reservations  = new ArrayList<>();
-
-
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_id")
+    private Route route;
 }
