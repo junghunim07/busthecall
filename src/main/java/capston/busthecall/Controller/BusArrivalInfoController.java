@@ -2,13 +2,11 @@ package capston.busthecall.Controller;
 
 import capston.busthecall.domain.dto.response.BusArrivalInfo;
 import capston.busthecall.manager.OpenApiManager;
-import capston.busthecall.service.BusArrivalInfoService;
 import capston.busthecall.support.ApiResponse;
 import capston.busthecall.support.ApiResponseGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
