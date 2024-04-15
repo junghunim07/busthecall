@@ -24,11 +24,7 @@ public class Reservation {
     @JoinColumn(name = "member_id")
     private Member member;
 
-
-    @ManyToOne
-    @JoinColumn(name = "bus_id")
-    private Bus bus;
-
+    private Long bus_id;
 
     private Long station_id;
 
@@ -40,10 +36,10 @@ public class Reservation {
     private DoingStatus status;
 
     @Builder
-    public Reservation(Member member, Bus bus, LocalDateTime reserveTime, Long station_id, DoingStatus status)
+    public Reservation(Member member, Long bus_id, LocalDateTime reserveTime, Long station_id, DoingStatus status)
     {
         this.member =member;
-        this.bus = bus;
+        this.bus_id = bus_id;
         this.reserveTime = reserveTime;
         this.station_id = station_id;
         this.status = status;

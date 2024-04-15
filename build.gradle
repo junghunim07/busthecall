@@ -46,8 +46,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
 
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-
+	implementation 'io.netty:netty-all:4.1.82.Final'
 
 
 }

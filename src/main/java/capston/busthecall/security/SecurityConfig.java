@@ -42,7 +42,9 @@ public class SecurityConfig {
                         "/actuator/health",
                         "/reports/**",
                         "/error",
-                        "/beta/**")
+                        "/beta/**",
+                        "/api/v1/list/*"
+                )
                 .permitAll()
                 .antMatchers(
                         HttpMethod.POST,
