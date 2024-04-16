@@ -1,6 +1,6 @@
 package capston.busthecall.controller;
 
-import capston.busthecall.domain.dto.request.DriverJoinRequest;
+import capston.busthecall.security.dto.request.DriverJoinRequest;
 import capston.busthecall.exception.AppException;
 import capston.busthecall.exception.ErrorCode;
 import capston.busthecall.service.DriverService;

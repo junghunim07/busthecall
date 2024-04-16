@@ -1,14 +1,30 @@
-package capston.busthecall.jwt;
+package capston.busthecall.security.jwt;
 
+import capston.busthecall.domain.Driver;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
+@RequiredArgsConstructor
 public class LoginAuthentication implements Authentication {
+
+    private final Driver driver;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        Collection<GrantedAuthority> collection = new ArrayList<>();
+
+        collection.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return driver.getRole();
+            }
+        });
+
+        return collection;
     }
 
     @Override

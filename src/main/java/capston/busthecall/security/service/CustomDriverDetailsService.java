@@ -1,7 +1,7 @@
-package capston.busthecall.service;
+package capston.busthecall.security.service;
 
 import capston.busthecall.domain.Driver;
-import capston.busthecall.domain.dto.CustomDriverDetails;
+import capston.busthecall.security.dto.CustomDriverDetails;
 import capston.busthecall.exception.AppException;
 import capston.busthecall.exception.ErrorCode;
 import capston.busthecall.repository.DriverRepository;

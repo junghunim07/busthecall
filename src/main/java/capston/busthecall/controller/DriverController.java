@@ -1,7 +1,6 @@
 package capston.busthecall.controller;
 
-import capston.busthecall.domain.dto.request.DriverJoinRequest;
-import capston.busthecall.domain.dto.request.DriverLogInRequest;
+import capston.busthecall.security.dto.request.DriverJoinRequest;
 import capston.busthecall.service.DriverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

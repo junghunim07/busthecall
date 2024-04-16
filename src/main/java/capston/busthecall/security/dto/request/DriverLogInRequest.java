@@ -1,13 +1,12 @@
-package capston.busthecall.domain.dto.request;
+package capston.busthecall.security.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class DriverJoinRequest {
+public class DriverLogInRequest {
 
-    private String name;
     private String email;
     private String password;
 }

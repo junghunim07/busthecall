@@ -1,4 +1,4 @@
-package capston.busthecall.domain.dto;
+package capston.busthecall.security.dto;
 
 import capston.busthecall.domain.Driver;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +29,10 @@ public class CustomDriverDetails implements UserDetails {
         return collection;
     }
 
+    public Long getId() {
+        return driver.getId();
+    }
+
     @Override
     public String getPassword() {
         return driver.getPassword();
@@ -36,6 +40,10 @@ public class CustomDriverDetails implements UserDetails {
 
     @Override
     public String getUsername() {
+        return driver.getName();
+    }
+
+    public String getEmail() {
         return driver.getEmail();
     }
 

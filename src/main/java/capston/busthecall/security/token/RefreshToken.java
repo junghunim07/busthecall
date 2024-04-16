@@ -1,4 +1,4 @@
-package capston.busthecall.domain;
+package capston.busthecall.security.token;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,20 +8,16 @@ import lombok.NoArgsConstructor;
 
 @Builder
 @Entity
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-public class Driver {
+public class RefreshToken {
 
-    @Id @Column(name = "driver_id")
+    @Id @Column(name = "refresh_token_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
     private String email;
-    private String password;
-    private String role;
-
-    @OneToOne(mappedBy = "driver", fetch = FetchType.LAZY)
-    private Bus bus;
+    private String refresh;
+    private String expiration;
 }
