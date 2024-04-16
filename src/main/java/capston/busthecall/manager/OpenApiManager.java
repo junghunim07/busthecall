@@ -12,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 @Component
@@ -29,8 +28,8 @@ public class OpenApiManager {
 
     // makeUrl 메소드 수정. @RequestParam 제거 및 파라미터명 stationId로 변경.
     private String makeUrl(Long stationId) throws UnsupportedEncodingException {
-        // serviceKeyParam 필드를 사용하여 URL 완성
-        return BASE_URL + serviceKeyParam + "&BUSSTOP_ID=" + stationId; // stationId를 URL에 포함
+
+        return BASE_URL + serviceKeyParam + "&BUSSTOP_ID=" + stationId;
     }
 
     public List<BusArrivalInfo> fetch(Long stationId) throws UnsupportedEncodingException {
@@ -47,18 +46,18 @@ public class OpenApiManager {
             List<BusArrivalInfo> busInfos = new ArrayList<>();
             if (busStopList.isArray()) {
                 for (JsonNode node : busStopList) {
-                    Long busId = node.path("BUS_ID").asLong(); // String에서 Long으로 변경.
+                    Long busId = node.path("BUS_ID").asLong();
                     int remainStop = node.path("REMAIN_STOP").asInt();
                     String busstopName = node.path("BUSSTOP_NAME").asText();
-                    String shortLineName = node.path("SHORT_LINE_NAME").asText(); // 추가된 필드
-                    Long remainMin = node.path("REMAIN_MIN").asLong(); // 추가된 필드
-                    Long lineId = node.path("LINE_ID").asLong(); // 추가된 필드
+                    String shortLineName = node.path("SHORT_LINE_NAME").asText();
+                    Long remainMin = node.path("REMAIN_MIN").asLong();
+                    Long lineId = node.path("LINE_ID").asLong();
 
                     BusArrivalInfo busArrivalInfo = BusArrivalInfo.builder()
                             .busId(busId)
                             .remainStop(remainStop)
                             .busstopName(busstopName)
-                            .shortLineName(shortLineName) // 빌더를 사용하여 추가된 필드 설정
+                            .shortLineName(shortLineName)
                             .remainMin(remainMin)
                             .lineId(lineId)
                             .build();
@@ -66,11 +65,8 @@ public class OpenApiManager {
                     busInfos.add(busArrivalInfo);
                 }
             }
-
-            // 여기에서 busInfos를 ResponseEntity로 감싸서 반환
             return busInfos;
         } catch (Exception e) {
-            // 오류 처리
             return null;
         }
     }
