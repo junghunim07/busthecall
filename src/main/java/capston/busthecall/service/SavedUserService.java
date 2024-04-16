@@ -2,10 +2,10 @@ package capston.busthecall.service;
 
 
 import capston.busthecall.domain.Member;
-import capston.busthecall.domain.dto.request.SaveUserRequest;
-import capston.busthecall.domain.dto.response.SavedUserInfo;
 import capston.busthecall.repository.MemberRepository;
 import capston.busthecall.security.authentication.authority.Roles;
+import capston.busthecall.security.dto.request.SaveUserRequest;
+import capston.busthecall.security.dto.response.SavedUserInfo;
 import capston.busthecall.support.token.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

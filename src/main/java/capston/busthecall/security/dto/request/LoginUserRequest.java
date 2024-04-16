@@ -1,4 +1,4 @@
-package capston.busthecall.domain.dto.request;
+package capston.busthecall.security.dto.request;
 
 
 import lombok.AllArgsConstructor;

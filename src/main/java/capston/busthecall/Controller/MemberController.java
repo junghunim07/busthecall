@@ -1,9 +1,8 @@
 package capston.busthecall.Controller;
 
-import capston.busthecall.domain.Member;
-import capston.busthecall.domain.dto.request.LoginUserRequest;
-import capston.busthecall.domain.dto.request.SaveUserRequest;
-import capston.busthecall.domain.dto.response.SavedUserInfo;
+import capston.busthecall.security.dto.request.LoginUserRequest;
+import capston.busthecall.security.dto.request.SaveUserRequest;
+import capston.busthecall.security.dto.response.SavedUserInfo;
 import capston.busthecall.service.LoadUserService;
 import capston.busthecall.service.SavedUserService;
 import capston.busthecall.support.ApiResponse;
@@ -11,10 +10,9 @@ import capston.busthecall.support.ApiResponseGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor

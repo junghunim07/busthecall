@@ -1,4 +1,4 @@
-package capston.busthecall.domain.dto.response;
+package capston.busthecall.security.dto.response;
 
 import capston.busthecall.support.token.AuthToken;
 import lombok.*;
