@@ -7,7 +7,7 @@ import capston.busthecall.security.authentication.authority.Roles;
 import capston.busthecall.security.dto.request.LoginUserRequest;
 import capston.busthecall.security.dto.request.SaveUserRequest;
 import capston.busthecall.security.dto.response.SavedUserInfo;
-import capston.busthecall.support.token.TokenGenerator;
+//import capston.busthecall.support.token.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class LoadUserService {
 
     private final MemberRepository memberRepository;
 
-    private final TokenGenerator tokenGenerator;
+    //private final TokenGenerator tokenGenerator;
 
     private static final Long NOT_EXIST_MEMBER = -1L;
 
@@ -80,7 +80,7 @@ public class LoadUserService {
     private SavedUserInfo getExistedMember(Long memberId) {
         return SavedUserInfo.builder()
                 .id(memberId)
-                .token(tokenGenerator.generateAuthToken(memberId, List.of(Roles.USER)))
+                //.token(tokenGenerator.generateAuthToken(memberId, List.of(Roles.USER)))
                 .isRegistered(false)
                 .build();
     }
@@ -88,7 +88,7 @@ public class LoadUserService {
     private SavedUserInfo getNewMember(Long memberId) {
         return SavedUserInfo.builder()
                 .id(memberId)
-                .token(tokenGenerator.generateAuthToken(memberId, List.of(Roles.USER)))
+                //.token(tokenGenerator.generateAuthToken(memberId, List.of(Roles.USER)))
                 .isRegistered(true)
                 .build();
     }

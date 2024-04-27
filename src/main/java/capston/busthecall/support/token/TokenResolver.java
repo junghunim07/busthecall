@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+//@Component
 public class TokenResolver {
 
     private static final String MEMBER_ID_CLAIM_KEY = "memberId";
     private static final String MEMBER_ROLE_CLAIM_KEY = "memberRole";
 
-    @Value("${security.jwt.token.secretkey}")
+    @Value("${jwt.secret}")
     private String secretKey;
 
     /**
@@ -24,7 +24,7 @@ public class TokenResolver {
      * @return 클레임 정보
      */
     public Optional<Claims> resolve(String token) {
-        try {
+        /*try {
             return Optional.ofNullable(
                     Jwts.parserBuilder()
                             .setSigningKey(secretKey.getBytes())
@@ -34,7 +34,8 @@ public class TokenResolver {
         } catch (Exception e) {
             log.warn("Failed to get memberId. token: {}", token);
             return Optional.empty();
-        }
+        }*/
+        return Optional.empty();
     }
 
     /**
@@ -44,7 +45,7 @@ public class TokenResolver {
      * @return memberId 정보
      */
     public Optional<Long> resolveId(String token) {
-        try {
+        /*try {
             return Optional.ofNullable(
                     Jwts.parserBuilder()
                             .setSigningKey(secretKey.getBytes())
@@ -55,7 +56,8 @@ public class TokenResolver {
         } catch (Exception e) {
             log.warn("Failed to get memberId. token: {}", token);
             return Optional.empty();
-        }
+        }*/
+        return Optional.empty();
     }
 
     /**
@@ -65,7 +67,7 @@ public class TokenResolver {
      * @return memberRole 정보
      */
     public Optional<String> resolveRole(String token) {
-        try {
+        /*try {
             return Optional.ofNullable(
                     Jwts.parserBuilder()
                             .setSigningKey(secretKey.getBytes())
@@ -76,6 +78,7 @@ public class TokenResolver {
         } catch (Exception e) {
             log.warn("Failed to get memberId. token: {}", token);
             return Optional.empty();
-        }
+        }*/
+        return Optional.empty();
     }
 }

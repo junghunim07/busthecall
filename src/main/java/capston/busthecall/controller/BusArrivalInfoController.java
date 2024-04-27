@@ -1,4 +1,4 @@
-package capston.busthecall.Controller;
+package capston.busthecall.controller;
 
 import capston.busthecall.domain.dto.response.BusArrivalInfo;
 import capston.busthecall.manager.OpenApiManager;

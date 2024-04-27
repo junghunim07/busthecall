@@ -1,13 +1,10 @@
-package capston.busthecall.Controller;
+package capston.busthecall.controller;
 
 
 import capston.busthecall.domain.dto.request.CreateReservationRequest;
-import capston.busthecall.domain.dto.response.SavedReservationInfo;
 import capston.busthecall.service.ReservationService;
-import capston.busthecall.support.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

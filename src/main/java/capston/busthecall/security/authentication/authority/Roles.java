@@ -4,13 +4,21 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Collections;
+import java.util.List;
+
 @Getter
 @ToString
 public enum Roles {
-    USER("ROLE_USER") {
+    MEMBER("ROLE_MEMBER") {
         @Override
         public GrantedAuthority getAuthority() {
-            return UserAuthority.builder().build();
+            return MemberAuthority.builder().build();
+        }
+    }, DRIVER("ROLE_DRIVER") {
+        @Override
+        public GrantedAuthority getAuthority() {
+            return DriverAuthority.builder().build();
         }
     };
 
@@ -22,10 +30,10 @@ public enum Roles {
 
     public abstract GrantedAuthority getAuthority();
 
-    public static Roles roleOf(String role) {
+    public static List<Roles> roleOf(String role) {
         for (Roles roles : Roles.values()) {
             if (roles.getRole().equals(role)) {
-                return roles;
+                return List.of(roles);
             }
         }
         throw new IllegalArgumentException("Invalid role. role: " + role);

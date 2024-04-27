@@ -1,7 +1,13 @@
-package capston.busthecall.security.jwt;
+package capston.busthecall.security.filter;
 
 import capston.busthecall.domain.Driver;
-import capston.busthecall.security.dto.CustomDriverDetails;
+import capston.busthecall.domain.Member;
+import capston.busthecall.security.authentication.authority.Roles;
+import capston.busthecall.security.dto.custom.CustomDetails;
+import capston.busthecall.security.dto.custom.CustomDriverDetails;
+import capston.busthecall.security.dto.custom.CustomMemberDetails;
+import capston.busthecall.security.token.TokenName;
+import capston.busthecall.security.token.TokenResolver;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,45 +23,73 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final TokenResolver tokenResolver;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //request 에서 access 헤더 찾기.
-        String accessToken = request.getHeader("access");
+        String accessToken = request.getHeader(TokenName.ACCESS.getName());
+
+        log.info("accessToken = {}", accessToken);
 
         /**
          * checkAccessHeader -> access 헤더 검증
          * checkTokenExpired -> token 만료 여부
          * checkAccessToken -> token 이 access 인지 확인. 맞으면 -> true 틀리면 -> false
          */
-        if (checkAccessHeader(request, response, filterChain, accessToken) || checkTokenExpired(response, accessToken)
-            || !checkAccessToken(response, accessToken)) {
+        if (checkAccessHeader(request, response, filterChain, accessToken)
+                || checkTokenExpired(response, accessToken)
+                || !checkAccessToken(response, accessToken)) {
+            log.info("request denied");
             return;
         }
 
-        Driver driver = getDriverInToken(accessToken);
+        String role = tokenResolver.getRole(accessToken);
+        CustomDetails customDetails = null;
+
+        log.info("role = {}", role);
+
+        if (role.equals(Roles.MEMBER.getRole())) {
+            log.info("MEMBER USER");
+            Member member = getMemberInToken(accessToken);
+            customDetails = new CustomMemberDetails(member);
+        }
+
+        if (role.equals(Roles.DRIVER.getRole())) {
+            log.info("DRIVER USER");
+            Driver driver = getDriverInToken(accessToken);
+            customDetails = new CustomDriverDetails(driver);
+        }
+
+        /*Driver driver = getDriverInToken(accessToken);
 
         //DriverDetails 버스 기사 정보 담기
-        CustomDriverDetails customDriverDetails = new CustomDriverDetails(driver);
+        CustomDetails customDriverDetails = new CustomDriverDetails(driver);*/
 
         //스프링 시큐리티 인증 토큰 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customDriverDetails, null, customDriverDetails.getAuthorities());
+        if (customDetails != null) {
+            Authentication authToken = new UsernamePasswordAuthenticationToken(customDetails, null, customDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            filterChain.doFilter(request, response);
+        } else {
+            log.info("CustomDetails Error = {}", customDetails);
+        }
         /**
          * 세션에 사용자 등록
          * JWT 방식의 일시적인 세션 -> 엄밀하게 정의하면 세션 X
          * SecurityContextHolder 가 관리하는 SecurityContext 의 Authentication 객체를 의미.
          * SecurityContext 생명 주기 -> SecurityContextHolderFilter 통과할 때까지 = 요청 후 서버에 머무르는 일시적인 시간.
          */
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+        //SecurityContextHolder.getContext().setAuthentication(authToken);
 
-        filterChain.doFilter(request, response);
+        //filterChain.doFilter(request, response);
     }
 
     private static boolean checkAccessHeader(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, String accessToken) throws IOException, ServletException {
@@ -66,22 +100,26 @@ public class JwtFilter extends OncePerRequestFilter {
         return false;
     }
 
-    private Driver getDriverInToken(String accessToken) {
-        //토큰에서 email, role 획득
-        String email = jwtUtil.getEmail(accessToken);
-        String role = jwtUtil.getRole(accessToken);
+    private Member getMemberInToken(String accessToken) {
+        String email = tokenResolver.getEmail(accessToken);
 
-        Driver driver = Driver.builder()
+        return Member.builder()
                 .email(email)
-                .role(role)
                 .build();
-        return driver;
+    }
+
+    private Driver getDriverInToken(String accessToken) {
+        String email = tokenResolver.getEmail(accessToken);
+
+        return Driver.builder()
+                .email(email)
+                .build();
     }
 
     private boolean checkAccessToken(HttpServletResponse response, String accessToken) throws IOException {
-        String category = jwtUtil.getCategory(accessToken);
+        String category = tokenResolver.getCategory(accessToken);
 
-        if (!category.equals("access")) {
+        if (!category.equals(TokenName.ACCESS.getName())) {
 
             //response body
             PrintWriter writer = response.getWriter();
@@ -97,7 +135,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private boolean checkTokenExpired(HttpServletResponse response, String accessToken) throws IOException {
         //토큰 만료 여부 확인, 만료 시 다음 필터로 넘기지 않음.
         try {
-            jwtUtil.isExpired(accessToken);
+            tokenResolver.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
 
             //response body
