@@ -27,7 +27,6 @@ public class DriverService {
                 .name(name)
                 .email(email)
                 .password(encoder.encode(password))
-                .role("ROLE_USER")
                 .build();
 
         driverRepository.save(driver);

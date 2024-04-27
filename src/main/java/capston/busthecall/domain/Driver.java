@@ -20,7 +20,6 @@ public class Driver {
     private String name;
     private String email;
     private String password;
-    private String role;
 
     @OneToOne(mappedBy = "driver", fetch = FetchType.LAZY)
     private Bus bus;

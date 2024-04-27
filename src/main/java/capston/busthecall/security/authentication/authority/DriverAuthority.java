@@ -10,10 +10,10 @@ import org.springframework.security.core.GrantedAuthority;
 @ToString
 @AllArgsConstructor
 @Builder(toBuilder = true)
-class UserAuthority implements GrantedAuthority {
+public class DriverAuthority implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return Roles.USER.getRole();
+        return Roles.DRIVER.getRole();
     }
 }

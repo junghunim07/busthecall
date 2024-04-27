@@ -14,16 +14,16 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+//@Component
 public class TokenGenerator {
 
-    @Value("${security.jwt.token.secretkey}")
+    @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${security.jwt.token.validtime.access}")
+    @Value("${jwt.access.expiredMs}")
     private Long accessTokenValidTime;
 
-    @Value("${security.jwt.token.validtime.refresh}")
+    @Value("${jwt.refresh.expiredMs}")
     private Long refreshTokenValidTime;
 
     private static final String MEMBER_ID_CLAIM_KEY = "memberId";

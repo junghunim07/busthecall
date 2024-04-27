@@ -1,4 +1,4 @@
-package capston.busthecall.Controller;
+package capston.busthecall.controller;
 
 import capston.busthecall.security.dto.request.DriverJoinRequest;
 import capston.busthecall.service.DriverService;

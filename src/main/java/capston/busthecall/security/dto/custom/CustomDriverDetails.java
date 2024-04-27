@@ -1,6 +1,7 @@
-package capston.busthecall.security.dto;
+package capston.busthecall.security.dto.custom;
 
 import capston.busthecall.domain.Driver;
+import capston.busthecall.security.authentication.authority.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class CustomDriverDetails implements UserDetails {
+public class CustomDriverDetails implements CustomDetails {
 
     private final Driver driver;
 
@@ -18,13 +19,7 @@ public class CustomDriverDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         Collection<GrantedAuthority> collection = new ArrayList<>();
-
-        collection.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return driver.getRole();
-            }
-        });
+        collection.add(Roles.DRIVER.getAuthority());
 
         return collection;
     }

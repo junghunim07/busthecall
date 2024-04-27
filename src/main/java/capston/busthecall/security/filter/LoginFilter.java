@@ -1,19 +1,23 @@
-package capston.busthecall.security.jwt;
+package capston.busthecall.security.filter;
 
+import capston.busthecall.security.authentication.authority.Roles;
+import capston.busthecall.security.dto.custom.CustomDetails;
 import capston.busthecall.security.dto.response.TokenResponse;
-import capston.busthecall.security.service.RefreshTokenService;
-import capston.busthecall.security.dto.CustomDriverDetails;
-import capston.busthecall.security.token.TokenName;
+import capston.busthecall.security.support.ResponseMessage;
+import capston.busthecall.security.support.TokenResponseSetting;
+import capston.busthecall.security.token.AuthToken;
+import capston.busthecall.security.token.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -22,17 +26,16 @@ import java.util.*;
 /**
  * 요청을 가로채서 요청 값을 검증
  */
+@Slf4j
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
-    private final RefreshTokenService refreshTokenService;
+    private final TokenProvider tokenGenerator;
 
-    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, RefreshTokenService refreshTokenService) {
+    public LoginFilter(AuthenticationManager authenticationManager, TokenProvider tokenGenerator) {
         this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-        this.refreshTokenService = refreshTokenService;
-        this.setFilterProcessesUrl("/api/v1/drivers/login");
+        this.tokenGenerator = tokenGenerator;
+        this.setFilterProcessesUrl("/api/v1/login");
         this.setAuthenticationManager(authenticationManager);
     }
 
@@ -59,42 +62,40 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
 
-        CustomDriverDetails customDriverDetails = (CustomDriverDetails) authentication.getPrincipal();
+        String email = getUserEmailIn(authentication);
+        String role = getUserRoleIn(authentication);
 
-        String id = String.valueOf(customDriverDetails.getId());
-        String name = customDriverDetails.getUsername();
-        String email = customDriverDetails.getEmail();
-        String role = authentication.getAuthorities().iterator().next().getAuthority();
+        log.info("Login Filter : email = {}, role = {}", email, role);
 
-        /*Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
+        AuthToken token = tokenGenerator.createJwt(email, Roles.roleOf(role));
 
-        String role = auth.getAuthority();*/
-
-        //refresh 토큰이 repository 저장되어 있으면 삭제
-        refreshTokenService.isExistRefreshTokenDelete(email);
-
-        String access = jwtUtil.createJwt(TokenName.ACCESS.getName(), id, name, email, role, jwtUtil.getAccessExpiredMs());
-        String refresh = jwtUtil.createJwt(TokenName.REFRESH.getName(), id, name, email, role, jwtUtil.getRefreshExpiredMs());
-
-        TokenResponse token = setResponseToken(access, refresh);
-
-        //Refresh 토큰 저장
-        refreshTokenService.save(email, refresh, jwtUtil.getRefreshExpiredMs());
+        TokenResponse tokenResponse = setResponseToken(HttpStatus.OK, ResponseMessage.LOGIN_SUCCESS, token);
 
         //응답 설정
-        setResponseBody(response, token);
+        setResponseBody(response, tokenResponse);
         /*response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());*/
     }
 
+    private String getUserEmailIn(Authentication authentication) {
+        CustomDetails customDetails = (CustomDetails) authentication.getPrincipal();
+        return customDetails.getEmail();
+    }
+
+    private String getUserRoleIn(Authentication authentication) {
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
+        return auth.getAuthority();
+    }
+
     //로그인 실패시 실행하는 메소드
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        response.setStatus(401);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        TokenResponse tokenResponse = setResponseToken(HttpStatus.UNAUTHORIZED, ResponseMessage.LOGIN_FAIL, null);
+        setResponseBody(response, tokenResponse);
     }
     protected Map<String, String> obtainBody(HttpServletRequest request) {
         try {
@@ -105,25 +106,21 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         }
     }
 
-    private static void setResponseBody(HttpServletResponse response, TokenResponse token) throws IOException {
+    private void setResponseBody(HttpServletResponse response, TokenResponse token) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(token);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+
+        response.setContentType(TokenResponseSetting.CONTENT_TYPE_JSON.getSetting());
+        response.setCharacterEncoding(TokenResponseSetting.CHARACTER_ENCODING_UTF8.getSetting());
         response.getWriter().write(json);
     }
 
-    private TokenResponse setResponseToken(String access, String refresh) {
-        Map<String, String> jwt = new HashMap<>();
-        jwt.put(TokenName.ACCESS.getName(), access);
-        jwt.put(TokenName.REFRESH.getName(), refresh);
+    private TokenResponse setResponseToken(HttpStatus status, ResponseMessage message, AuthToken token) {
 
-        TokenResponse token = TokenResponse.builder()
-                .status(HttpStatus.OK)
-                .message("JWT 토큰 발급")
-                .data(jwt)
+        return TokenResponse.builder()
+                .status(status)
+                .message(message)
+                .data(token)
                 .build();
-
-        return token;
     }
 }

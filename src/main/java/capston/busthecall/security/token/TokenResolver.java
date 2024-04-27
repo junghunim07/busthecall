@@ -1,6 +1,8 @@
-package capston.busthecall.security.jwt;
+package capston.busthecall.security.token;
 
+import capston.busthecall.security.authentication.authority.Roles;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,26 +12,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
-public class JwtUtil {
+public class TokenResolver {
 
     private SecretKey secretKey;
 
-    @Value("${jwt.access.expiredMs}")
-    private Long ACCESS_EXPIRED_MS;
-    @Value("${jwt.refresh.expiredMs}")
-    private Long REFRESH_EXPIRED_MS;
-
-    public JwtUtil(@Value("${jwt.secret}")String secret) {
-
-        secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
-    }
-
-    public Long getAccessExpiredMs() {
-        return ACCESS_EXPIRED_MS;
-    }
-
-    public Long getRefreshExpiredMs() {
-        return REFRESH_EXPIRED_MS;
+    @Autowired
+    public TokenResolver(@Value("${jwt.secret}") String key) {
+        secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
     public String getId(String token) {
@@ -57,19 +46,5 @@ public class JwtUtil {
     public Boolean isExpired(String token) {
 
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
-    }
-
-    public String createJwt(String category, String id, String name, String email, String role, Long expiredMs) {
-
-        return Jwts.builder()
-                .claim("category", category)
-                .claim("id", id)
-                .claim("name", name)
-                .claim("email", email)
-                .claim("role", role)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(secretKey)
-                .compact();
     }
 }

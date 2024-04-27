@@ -1,4 +1,4 @@
-package capston.busthecall.Controller;
+package capston.busthecall.controller;
 
 import capston.busthecall.security.dto.request.LoginUserRequest;
 import capston.busthecall.security.dto.request.SaveUserRequest;
@@ -31,13 +31,13 @@ public class MemberController {
         return ApiResponseGenerator.success(res, HttpStatus.CREATED);
     }
 
-    @PostMapping(value="/login")
+    /*@PostMapping(value="/login")
     public ApiResponse<ApiResponse.SuccessBody<SavedUserInfo>> login
             (@Valid @RequestBody LoginUserRequest request)
     {
         SavedUserInfo res = loadUserService.execute(request);
         return ApiResponseGenerator.success(res, HttpStatus.CREATED);
-    }
+    }*/
 
 
 }
