@@ -1,9 +1,7 @@
 package capston.busthecall.controller;
 
-import capston.busthecall.security.dto.request.LoginUserRequest;
-import capston.busthecall.security.dto.request.SaveUserRequest;
-import capston.busthecall.security.dto.response.SavedUserInfo;
-import capston.busthecall.service.LoadUserService;
+import capston.busthecall.domain.dto.request.JoinRequest;
+import capston.busthecall.domain.dto.response.SavedInfo;
 import capston.busthecall.service.SavedUserService;
 import capston.busthecall.support.ApiResponse;
 import capston.busthecall.support.ApiResponseGenerator;
@@ -21,23 +19,12 @@ import jakarta.validation.Valid;
 public class MemberController {
 
     private final SavedUserService savedUserService;
-    private final LoadUserService loadUserService;
 
-    @PostMapping(value = "/register")
-    public ApiResponse<ApiResponse.SuccessBody<SavedUserInfo>> register(
-            @Valid @RequestBody SaveUserRequest request)
+    @PostMapping(value = "/join")
+    public ApiResponse<ApiResponse.SuccessBody<SavedInfo>> register(
+            @Valid @RequestBody JoinRequest request)
     {
-        SavedUserInfo res = savedUserService.excute(request);
+        SavedInfo res = savedUserService.excute(request);
         return ApiResponseGenerator.success(res, HttpStatus.CREATED);
     }
-
-    /*@PostMapping(value="/login")
-    public ApiResponse<ApiResponse.SuccessBody<SavedUserInfo>> login
-            (@Valid @RequestBody LoginUserRequest request)
-    {
-        SavedUserInfo res = loadUserService.execute(request);
-        return ApiResponseGenerator.success(res, HttpStatus.CREATED);
-    }*/
-
-
 }

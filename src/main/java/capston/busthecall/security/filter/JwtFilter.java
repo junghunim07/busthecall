@@ -23,7 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -68,28 +67,20 @@ public class JwtFilter extends OncePerRequestFilter {
             customDetails = new CustomDriverDetails(driver);
         }
 
-        /*Driver driver = getDriverInToken(accessToken);
-
-        //DriverDetails 버스 기사 정보 담기
-        CustomDetails customDriverDetails = new CustomDriverDetails(driver);*/
-
         //스프링 시큐리티 인증 토큰 생성
         if (customDetails != null) {
+            /**
+             * 세션에 사용자 등록
+             * JWT 방식의 일시적인 세션 -> 엄밀하게 정의하면 세션 X
+             * SecurityContextHolder 가 관리하는 SecurityContext 의 Authentication 객체를 의미.
+             * SecurityContext 생명 주기 -> SecurityContextHolderFilter 통과할 때까지 = 요청 후 서버에 머무르는 일시적인 시간.
+             */
             Authentication authToken = new UsernamePasswordAuthenticationToken(customDetails, null, customDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authToken);
             filterChain.doFilter(request, response);
         } else {
             log.info("CustomDetails Error = {}", customDetails);
         }
-        /**
-         * 세션에 사용자 등록
-         * JWT 방식의 일시적인 세션 -> 엄밀하게 정의하면 세션 X
-         * SecurityContextHolder 가 관리하는 SecurityContext 의 Authentication 객체를 의미.
-         * SecurityContext 생명 주기 -> SecurityContextHolderFilter 통과할 때까지 = 요청 후 서버에 머무르는 일시적인 시간.
-         */
-        //SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        //filterChain.doFilter(request, response);
     }
 
     private static boolean checkAccessHeader(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, String accessToken) throws IOException, ServletException {

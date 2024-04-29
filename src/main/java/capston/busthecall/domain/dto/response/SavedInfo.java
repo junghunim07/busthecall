@@ -1,5 +1,6 @@
-package capston.busthecall.security.dto.response;
+package capston.busthecall.domain.dto.response;
 
+import capston.busthecall.security.authentication.authority.Roles;
 import capston.busthecall.support.token.AuthToken;
 import lombok.*;
 
@@ -8,9 +9,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class SavedUserInfo {
+public class SavedInfo {
 
     private Long id;
-    private AuthToken token;
+    private Roles roles;
     private Boolean isRegistered;
 }

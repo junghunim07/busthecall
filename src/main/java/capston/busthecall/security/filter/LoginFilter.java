@@ -2,7 +2,7 @@ package capston.busthecall.security.filter;
 
 import capston.busthecall.security.authentication.authority.Roles;
 import capston.busthecall.security.dto.custom.CustomDetails;
-import capston.busthecall.security.dto.response.TokenResponse;
+import capston.busthecall.security.dto.TokenResponse;
 import capston.busthecall.security.support.ResponseMessage;
 import capston.busthecall.security.support.TokenResponseSetting;
 import capston.busthecall.security.token.AuthToken;
@@ -73,9 +73,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         //응답 설정
         setResponseBody(response, tokenResponse);
-        /*response.setHeader("access", access);
-        response.addCookie(createCookie("refresh", refresh));
-        response.setStatus(HttpStatus.OK.value());*/
     }
 
     private String getUserEmailIn(Authentication authentication) {
@@ -120,7 +117,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         return TokenResponse.builder()
                 .status(status)
                 .message(message)
-                .data(token)
+                .token(token)
                 .build();
     }
 }

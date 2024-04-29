@@ -2,7 +2,7 @@ package capston.busthecall.service;
 
 
 import capston.busthecall.domain.Reservation;
-import capston.busthecall.domain.Status.DoingStatus;
+import capston.busthecall.domain.status.DoingStatus;
 import capston.busthecall.domain.dto.request.CreateReservationRequest;
 import capston.busthecall.repository.BusRepository;
 import capston.busthecall.repository.MemberRepository;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Service
 @Transactional(readOnly = true)
