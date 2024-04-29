@@ -1,6 +1,5 @@
 package capston.busthecall.security.token;
 
-import capston.busthecall.security.authentication.authority.Roles;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

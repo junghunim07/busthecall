@@ -1,9 +1,10 @@
 package capston.busthecall.security.controller;
 
 import capston.busthecall.security.authentication.authority.Roles;
-import capston.busthecall.security.dto.response.TokenResponse;
+import capston.busthecall.security.dto.TokenResponse;
 import capston.busthecall.security.support.ResponseMessage;
 import capston.busthecall.security.token.AuthToken;
+import capston.busthecall.security.token.TokenName;
 import capston.busthecall.security.token.TokenProvider;
 import capston.busthecall.security.token.TokenResolver;
 import jakarta.servlet.http.Cookie;
@@ -15,12 +16,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -59,7 +58,7 @@ public class RefreshTokenController {
         return TokenResponse.builder()
                 .status(HttpStatus.OK)
                 .message(ResponseMessage.REISSUE_REFRESH_TOKEN)
-                .data(token)
+                .token(token)
                 .build();
     }
 
@@ -68,7 +67,7 @@ public class RefreshTokenController {
         Cookie[] cookies = request.getCookies();
 
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
+            if (cookie.getName().equals(TokenName.REFRESH.getName())) {
                 refresh = cookie.getValue();
             }
         }

@@ -1,8 +1,6 @@
 package capston.busthecall.security.service.custom;
 
 import capston.busthecall.domain.Member;
-import capston.busthecall.exception.AppException;
-import capston.busthecall.exception.ErrorCode;
 import capston.busthecall.repository.MemberRepository;
 import capston.busthecall.security.dto.custom.CustomMemberDetails;
 import lombok.RequiredArgsConstructor;

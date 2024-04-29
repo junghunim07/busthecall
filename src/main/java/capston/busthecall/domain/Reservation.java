@@ -1,7 +1,7 @@
 package capston.busthecall.domain;
 
 
-import capston.busthecall.domain.Status.DoingStatus;
+import capston.busthecall.domain.status.DoingStatus;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

@@ -3,17 +3,15 @@ package capston.busthecall.service;
 
 import capston.busthecall.domain.Member;
 import capston.busthecall.repository.MemberRepository;
+import capston.busthecall.domain.dto.request.JoinRequest;
+import capston.busthecall.domain.dto.response.SavedInfo;
 import capston.busthecall.security.authentication.authority.Roles;
-import capston.busthecall.security.dto.request.SaveUserRequest;
-import capston.busthecall.security.dto.response.SavedUserInfo;
-//import capston.busthecall.support.token.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,12 +22,11 @@ import java.util.Optional;
 public class SavedUserService {
 
     private final MemberRepository memberRepository;
-//    private final TokenGenerator tokenGenerator;
     private static final Long NOT_EXIST_MEMBER  = -1L;
     private final BCryptPasswordEncoder encoder;
 
     @Transactional
-    public SavedUserInfo excute(SaveUserRequest request)
+    public SavedInfo excute(JoinRequest request)
     {
         Long existMember = validateMember(request.getEmail());
 
@@ -71,7 +68,7 @@ public class SavedUserService {
             throw new IllegalArgumentException();
     }
 
-    private Long saveMember(SaveUserRequest request) {
+    private Long saveMember(JoinRequest request) {
         return memberRepository
                 .save(
                         Member.builder()
@@ -82,18 +79,18 @@ public class SavedUserService {
                 .getId();
     }
 
-    private SavedUserInfo getNewMember(Long memberId) {
-        return SavedUserInfo.builder()
+    private SavedInfo getNewMember(Long memberId) {
+        return SavedInfo.builder()
                 .id(memberId)
-                //.token(tokenGenerator.generateAuthToken(memberId, List.of(Roles.USER)))
+                .roles(Roles.MEMBER)
                 .isRegistered(true)
                 .build();
     }
 
-    private SavedUserInfo getExistedMember(Long memberId) {
-        return SavedUserInfo.builder()
+    private SavedInfo getExistedMember(Long memberId) {
+        return SavedInfo.builder()
                 .id(memberId)
-                //.token(tokenGenerator.generateAuthToken(memberId, List.of(Roles.USER)))
+                .roles(Roles.MEMBER)
                 .isRegistered(false)
                 .build();
     }

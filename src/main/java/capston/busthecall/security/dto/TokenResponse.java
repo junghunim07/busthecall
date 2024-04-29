@@ -1,12 +1,10 @@
-package capston.busthecall.security.dto.response;
+package capston.busthecall.security.dto;
 
 import capston.busthecall.security.support.ResponseMessage;
 import capston.busthecall.security.token.AuthToken;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
-
-import java.util.Map;
 
 @Builder
 @Data
