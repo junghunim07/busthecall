@@ -13,6 +13,7 @@ application.properties
 application.yml
 application-API-KEY.properties
 
+src/main/resources/docker-compose.yml
 
 ### STS ###
 .apt_generated
