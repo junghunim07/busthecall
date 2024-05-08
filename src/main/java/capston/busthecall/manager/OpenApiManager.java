@@ -9,65 +9,63 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 public class OpenApiManager {
+
     private final String BASE_URL = "http://api.gwangju.go.kr/json/arriveInfo";
-
-    // serviceKey를 클래스 필드로 선언.
     private final String serviceKeyParam;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
-    // 생성자를 통해 serviceKey 값 주입 및 serviceKeyParam 초기화
-    public OpenApiManager(@Value("${api.serviceKey}") String serviceKey) {
+    public OpenApiManager(@Value("${api.serviceKey}") String serviceKey, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.serviceKeyParam = "?ServiceKey=" + serviceKey;
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
+        this.restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
     }
 
-    // makeUrl 메소드 수정. @RequestParam 제거 및 파라미터명 stationId로 변경.
-    private String makeUrl(Long stationId) throws UnsupportedEncodingException {
-
+    private String makeUrl(Long stationId) {
         return BASE_URL + serviceKeyParam + "&BUSSTOP_ID=" + stationId;
     }
 
-    public List<BusArrivalInfo> fetch(Long stationId) throws UnsupportedEncodingException {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-        HttpEntity<?> entity = new HttpEntity<>(new HttpHeaders());
-        ResponseEntity<String> response = restTemplate.exchange(makeUrl(stationId), HttpMethod.GET, entity, String.class);
-
+    public List<BusArrivalInfo> fetch(Long stationId) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(response.getBody());
+            String url = makeUrl(stationId);
+            HttpEntity<?> entity = new HttpEntity<>(new HttpHeaders());
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            return parseBusStopList(response.getBody());
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching bus arrival information", e);
+        }
+    }
+
+    private List<BusArrivalInfo> parseBusStopList(String responseBody) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(responseBody);
             JsonNode busStopList = rootNode.path("BUSSTOP_LIST");
 
-            List<BusArrivalInfo> busInfos = new ArrayList<>();
-            if (busStopList.isArray()) {
-                for (JsonNode node : busStopList) {
-                    Long busId = node.path("BUS_ID").asLong();
-                    int remainStop = node.path("REMAIN_STOP").asInt();
-                    String busstopName = node.path("BUSSTOP_NAME").asText();
-                    String shortLineName = node.path("SHORT_LINE_NAME").asText();
-                    Long remainMin = node.path("REMAIN_MIN").asLong();
-                    Long lineId = node.path("LINE_ID").asLong();
-
-                    BusArrivalInfo busArrivalInfo = BusArrivalInfo.builder()
-                            .busId(busId)
-                            .remainStop(remainStop)
-                            .busstopName(busstopName)
-                            .shortLineName(shortLineName)
-                            .remainMin(remainMin)
-                            .lineId(lineId)
-                            .build();
-
-                    busInfos.add(busArrivalInfo);
-                }
-            }
-            return busInfos;
+            return StreamSupport.stream(busStopList.spliterator(), false)
+                    .map(this::parseBusArrivalInfo)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException("Error parsing bus stop list", e);
         }
+    }
+
+    private BusArrivalInfo parseBusArrivalInfo(JsonNode node) {
+        return BusArrivalInfo.builder()
+                .busId(node.path("BUS_ID").asLong())
+                .remainStop(node.path("REMAIN_STOP").asInt())
+                .busstopName(node.path("BUSSTOP_NAME").asText())
+                .shortLineName(node.path("SHORT_LINE_NAME").asText())
+                .remainMin(node.path("REMAIN_MIN").asLong())
+                .lineId(node.path("LINE_ID").asLong())
+                .arriveFlag(node.path("ARRIVE_FLAG").asInt())
+                .build();
     }
 }

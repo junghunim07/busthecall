@@ -19,13 +19,15 @@ public class BusArrivalInfo {
 
     private Long lineId;
 
+    private int arriveFlag;
     @Builder
-    public BusArrivalInfo(Long busId, int remainStop, String busstopName, String shortLineName, Long remainMin, Long lineId) {
+    public BusArrivalInfo(Long busId, int remainStop, String busstopName, String shortLineName, Long remainMin, Long lineId, int arriveFlag) {
         this.busId = busId;
         this.remainStop = remainStop;
         this.busstopName = busstopName;
         this.shortLineName = shortLineName;
         this.remainMin = remainMin;
         this.lineId = lineId;
+        this.arriveFlag=arriveFlag;
     }
 }

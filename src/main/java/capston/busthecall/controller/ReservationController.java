@@ -2,13 +2,16 @@ package capston.busthecall.controller;
 
 
 import capston.busthecall.domain.dto.request.CreateReservationRequest;
+import capston.busthecall.domain.dto.response.DeletedReservationInfo;
+import capston.busthecall.domain.dto.response.SavedInfo;
+import capston.busthecall.security.token.TokenResolver;
 import capston.busthecall.service.ReservationService;
+import capston.busthecall.support.ApiResponse;
+import capston.busthecall.support.ApiResponseGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -21,7 +24,7 @@ public class ReservationController {
 
     private final ReservationService reservationService;
    // private final TokenUserDetailsService tokenUserDetailsService;
-
+    //private final TokenResolver tokenResolver;
 
     @PostMapping("/onboard")
     public String save(
@@ -31,6 +34,15 @@ public class ReservationController {
         log.info("reservationId={}",reservationId);
         return "redirect:/api/v1/reservations";
     }
+
+    @GetMapping("/offboard")
+    public ApiResponse<ApiResponse.SuccessBody<DeletedReservationInfo>> delete()
+    {
+        Long memberId = null; // findMemberByToken(request);
+        DeletedReservationInfo res = reservationService.excute2(memberId);
+        return ApiResponseGenerator.success(res, HttpStatus.CREATED);
+    }
+
 
 //    private Long findMemberByToken(HttpServletRequest request) {
 //        String authorization = request.getHeader("Authorization");

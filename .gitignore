@@ -10,8 +10,10 @@ spring.profiles.include=API-KEY
 
 # ignore properties file
 application.properties
+application.yml
 application-API-KEY.properties
 
+src/main/resources/docker-compose.yml
 
 ### STS ###
 .apt_generated

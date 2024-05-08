@@ -2,6 +2,7 @@ package capston.busthecall.service;
 
 
 import capston.busthecall.domain.Reservation;
+import capston.busthecall.domain.dto.response.DeletedReservationInfo;
 import capston.busthecall.domain.status.DoingStatus;
 import capston.busthecall.domain.dto.request.CreateReservationRequest;
 import capston.busthecall.repository.BusRepository;
@@ -38,5 +39,18 @@ public class ReservationService {
                 .build();
 
         return reservationRepository.save(reservation).getId();
+    }
+
+
+    @Transactional
+    public DeletedReservationInfo excute2(Long memberId)
+    {
+
+        Reservation reservation = reservationRepository.findByMemberId(memberId);
+        reservationRepository.delete(reservation);
+        return DeletedReservationInfo.builder()
+                .isCancel(true)
+                .build();
+
     }
 }

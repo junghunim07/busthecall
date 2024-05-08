@@ -29,10 +29,6 @@ public class BusArrivalInfoController {
 
             // 성공적으로 정보를 가져왔다면, ApiResponse를 통해 성공 메시지와 함께 데이터를 반환합니다.
             return ApiResponseGenerator.success(busArrivalInfos, HttpStatus.OK);
-        } catch (UnsupportedEncodingException e) {
-            log.error("Encoding error", e);
-            // 인코딩 에러 발생 시, ApiResponse를 통해 실패 메시지를 반환합니다.
-            return null;
         } catch (Exception e) {
             log.error("Error fetching bus arrival information", e);
             // 그외 에러 발생 시, ApiResponse를 통해 실패 메시지를 반환합니다.
