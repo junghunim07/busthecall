@@ -4,6 +4,7 @@ package capston.busthecall.controller;
 import capston.busthecall.domain.dto.request.CreateReservationRequest;
 import capston.busthecall.domain.dto.response.DeletedReservationInfo;
 import capston.busthecall.domain.dto.response.SavedInfo;
+import capston.busthecall.security.token.TokenResolver;
 import capston.busthecall.service.ReservationService;
 import capston.busthecall.support.ApiResponse;
 import capston.busthecall.support.ApiResponseGenerator;
@@ -23,11 +24,11 @@ public class ReservationController {
 
     private final ReservationService reservationService;
    // private final TokenUserDetailsService tokenUserDetailsService;
-
+    //private final TokenResolver tokenResolver;
 
     @PostMapping("/onboard")
     public String save(
-            @RequestBody @Valid CreateReservationRequest requestData /*, HttpServletRequest request*/) {
+            @RequestBody @Valid CreateReservationRequest requestData, HttpServletRequest request) {
         Long memberId = 0L; //findMemberByToken(request);
         Long reservationId = reservationService.execute(requestData, memberId);
         log.info("reservationId={}",reservationId);

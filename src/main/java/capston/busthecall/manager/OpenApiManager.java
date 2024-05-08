@@ -65,6 +65,7 @@ public class OpenApiManager {
                 .shortLineName(node.path("SHORT_LINE_NAME").asText())
                 .remainMin(node.path("REMAIN_MIN").asLong())
                 .lineId(node.path("LINE_ID").asLong())
+                .arriveFlag(node.path("ARRIVE_FLAG").asInt())
                 .build();
     }
 }

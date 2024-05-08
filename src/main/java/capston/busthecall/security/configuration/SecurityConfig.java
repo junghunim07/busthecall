@@ -68,6 +68,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/drivers/join").permitAll()
                 .requestMatchers("/api/v1/login", "/reissue").permitAll()
                 .requestMatchers("/api/v1/members/join").permitAll()
+                .requestMatchers("/api/v1/list/*").permitAll()
                 .anyRequest().authenticated());
 
         //JWTFilter 등록
