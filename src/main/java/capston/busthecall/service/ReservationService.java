@@ -1,7 +1,9 @@
 package capston.busthecall.service;
 
 
+import capston.busthecall.domain.Bus;
 import capston.busthecall.domain.Reservation;
+import capston.busthecall.domain.dto.response.CountReservationInfo;
 import capston.busthecall.domain.dto.response.DeletedReservationInfo;
 import capston.busthecall.domain.status.DoingStatus;
 import capston.busthecall.domain.dto.request.CreateReservationRequest;
@@ -53,4 +55,11 @@ public class ReservationService {
                 .build();
 
     }
+
+
+//    @Transactional
+//    public CountReservationInfo excute3(Long stationId, Long driverId)
+//    {
+//        Bus bus = reservationRepository.
+//    }
 }

@@ -2,6 +2,7 @@ package capston.busthecall.controller;
 
 
 import capston.busthecall.domain.dto.request.CreateReservationRequest;
+import capston.busthecall.domain.dto.response.CountReservationInfo;
 import capston.busthecall.domain.dto.response.DeletedReservationInfo;
 import capston.busthecall.domain.dto.response.SavedInfo;
 import capston.busthecall.security.token.TokenResolver;
@@ -43,6 +44,15 @@ public class ReservationController {
         return ApiResponseGenerator.success(res, HttpStatus.CREATED);
     }
 
+//    @GetMapping("/{stationId}")
+//    public ApiResponse<ApiResponse.SuccessBody<CountReservationInfo>> count(@PathVariable Long stationId, HttpServletRequest request)
+//    {
+//        Long drvierId = null; //findMemberByToken(request);
+//
+//        CountReservationInfo res = reservationService.excute3(stationId,drvierId);
+//
+//        return ApiResponseGenerator.success(res, HttpStatus.CREATED);
+//    }
 
 //    private Long findMemberByToken(HttpServletRequest request) {
 //        String authorization = request.getHeader("Authorization");
