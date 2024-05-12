@@ -35,19 +35,20 @@ public class TokenProvider {
         secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public AuthToken createJwt(String email, List<Roles> memberRoles) {
+    public AuthToken createJwt(Long id, String email, List<Roles> memberRoles) {
         log.info("create JWT Token");
         List<String> roles = convertToStringList(memberRoles);
 
         return AuthToken.builder()
-                .accessToken(generateAccessToken(email, roles))
-                .refreshToken(generateRefreshToken(email, roles))
+                .accessToken(generateAccessToken(id, email, roles))
+                .refreshToken(generateRefreshToken(id, email, roles))
                 .build();
     }
 
-    public String generateAccessToken(String email, List<String> roles) {
+    public String generateAccessToken(Long id, String email, List<String> roles) {
         return Jwts.builder()
                 .claim("category", TokenName.ACCESS.getName())
+                .claim("id", id)
                 .claim("email", email)
                 .claim("role", roles.get(0))
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -56,9 +57,10 @@ public class TokenProvider {
                 .compact();
     }
 
-    public String generateRefreshToken(String email, List<String> roles) {
+    public String generateRefreshToken(Long id, String email, List<String> roles) {
         return Jwts.builder()
                 .claim("category", TokenName.REFRESH.getName())
+                .claim("id", id)
                 .claim("email", email)
                 .claim("role", roles.get(0))
                 .issuedAt(new Date(System.currentTimeMillis()))
