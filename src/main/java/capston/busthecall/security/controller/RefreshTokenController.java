@@ -36,12 +36,13 @@ public class RefreshTokenController {
         String refresh = getRefreshToken(request);
         HttpHeaders header = responseHeaderSetting();
 
+        Long id = tokenResolver.getId(refresh);
         String email = tokenResolver.getEmail(refresh);
         String role = tokenResolver.getRole(refresh);
 
-        log.info("RefreshToken Controller : email = {}, role = {}", email, role);
+        log.info("RefreshToken Controller : id = {}, email = {}, role = {}", id, email, role);
 
-        AuthToken token = tokenProvider.createJwt(email, Roles.roleOf(role));
+        AuthToken token = tokenProvider.createJwt(id, email, Roles.roleOf(role));
         TokenResponse tokenResponse = createTokenResponse(token);
 
         return new ResponseEntity<>(tokenResponse, header, tokenResponse.getStatus());

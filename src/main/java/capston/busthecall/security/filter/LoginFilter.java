@@ -62,17 +62,23 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
 
+        Long id = getUserIdIn(authentication);
         String email = getUserEmailIn(authentication);
         String role = getUserRoleIn(authentication);
 
-        log.info("Login Filter : email = {}, role = {}", email, role);
+        log.info("Login Filter : id = {}, email = {}, role = {}", id, email, role);
 
-        AuthToken token = tokenGenerator.createJwt(email, Roles.roleOf(role));
+        AuthToken token = tokenGenerator.createJwt(id, email, Roles.roleOf(role));
 
         TokenResponse tokenResponse = setResponseToken(HttpStatus.OK, ResponseMessage.LOGIN_SUCCESS, token);
 
         //응답 설정
         setResponseBody(response, tokenResponse);
+    }
+
+    private Long getUserIdIn(Authentication authentication) {
+        CustomDetails customDetails = (CustomDetails) authentication.getPrincipal();
+        return customDetails.getId();
     }
 
     private String getUserEmailIn(Authentication authentication) {
