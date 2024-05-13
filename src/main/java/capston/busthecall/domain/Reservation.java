@@ -17,16 +17,16 @@ public class Reservation {
 
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="reservation_id")
+    @Column(name ="reservationId")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "member_id")
+    @ManyToOne
+    @JoinColumn(name = "memberId")
     private Member member;
 
-    private Long bus_id;
+    private Long busId;
 
-    private Long station_id;
+    private Long stationId;
 
     @CreationTimestamp
     @Column(name = "reserveTime")
@@ -36,12 +36,12 @@ public class Reservation {
     private DoingStatus status;
 
     @Builder
-    public Reservation(Member member, Long bus_id, LocalDateTime reserveTime, Long station_id, DoingStatus status)
+    public Reservation(Member member, Long busId, LocalDateTime reserveTime, Long stationId, DoingStatus status)
     {
         this.member =member;
-        this.bus_id = bus_id;
+        this.busId = busId;
         this.reserveTime = reserveTime;
-        this.station_id = station_id;
+        this.stationId = stationId;
         this.status = status;
     }
 

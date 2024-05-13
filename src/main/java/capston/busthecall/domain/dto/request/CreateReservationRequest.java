@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateReservationRequest {
 
-    private Long bus_id;
+    private Long busId;
 
-    private Long station_id;
+    private Long stationId;
 
 }
