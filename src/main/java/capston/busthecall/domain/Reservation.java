@@ -20,7 +20,7 @@ public class Reservation {
     @Column(name ="reservationId")
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
 

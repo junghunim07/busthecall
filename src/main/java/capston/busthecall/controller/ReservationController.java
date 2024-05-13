@@ -60,7 +60,7 @@ public class ReservationController {
     public String drop(
             @RequestBody @Valid CreateReservationRequest requestData, HttpServletRequest request) {
         Long memberId = findMemberByToken(request);
-        Long reservationId = reservationService.execute(requestData, memberId);
+        Long reservationId = reservationService.execute_2(requestData, memberId);
         log.info("reservationId={}",reservationId);
         return "redirect:/api/v1/reservations";
     }
