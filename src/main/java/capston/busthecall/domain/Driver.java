@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Driver {
 
-    @Id @Column(name = "driver_id")
+    @Id @Column(name = "driverId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

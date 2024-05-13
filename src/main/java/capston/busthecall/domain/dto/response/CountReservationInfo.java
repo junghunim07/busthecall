@@ -10,6 +10,6 @@ import lombok.*;
 @Builder(toBuilder = true)
 public class CountReservationInfo {
 
-    private int onboard;
-    private int offboard;
+    private Long onboard;
+    private Long offboard;
 }

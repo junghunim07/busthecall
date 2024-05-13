@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Route {
 
-    @Id @Column(name = "route_id")
+    @Id @Column(name = "routId")
     private Long id;
 
     private String name;

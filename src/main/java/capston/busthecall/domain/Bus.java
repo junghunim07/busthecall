@@ -9,7 +9,7 @@ public class Bus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bus_id")
+    @Column(name = "busId")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -17,6 +17,6 @@ public class Bus {
     private Driver driver;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "route_id")
+    @JoinColumn(name = "routeId")
     private Route route;
 }
