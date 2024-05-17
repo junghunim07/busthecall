@@ -26,12 +26,10 @@ public class SavedUserService {
     private final BCryptPasswordEncoder encoder;
 
     @Transactional
-    public SavedInfo excute(JoinRequest request)
-    {
+    public SavedInfo join(JoinRequest request) {
         Long existMember = validateMember(request.getEmail());
 
-        if(!Objects.equals(existMember,NOT_EXIST_MEMBER))
-        {
+        if(!Objects.equals(existMember,NOT_EXIST_MEMBER)) {
             Member member = getMember(existMember);
 
             validatePassword(member, request.getPassword());
@@ -39,32 +37,28 @@ public class SavedUserService {
             return getExistedMember(member.getId());
         }
 
-        Long saveMemberId =saveMember(request);
+        Long saveMemberId = saveMember(request);
 
         return getNewMember(saveMemberId);
     }
 
-    private Long validateMember(String email)
-    {
+    private Long validateMember(String email) {
         Optional<Member> source = memberRepository.findByEmailAndDeletedFalse(email);
 
-        if(source.isPresent())
-        {
+        if(source.isPresent()) {
             return source.get().getId();
         }
 
         return NOT_EXIST_MEMBER;
     }
 
-    private Member getMember(Long existMember)
-    {
+    private Member getMember(Long existMember) {
         return (Member) Objects.requireNonNull(memberRepository.findByIdAndDeletedFalse(existMember).orElse(null));
     }
 
 
-    private void validatePassword(Member member, String requestPassword)
-    {
-        if(!member.isPassword(encoder.encode(requestPassword)))
+    private void validatePassword(Member member, String requestPassword) {
+        if(encoder.encode(member.getPassword()).equals(requestPassword))
             throw new IllegalArgumentException();
     }
 

@@ -30,10 +30,13 @@ public class DriverService {
         }
 
         //저장
-        Driver driver = createDriver(name, email, password);
-        driverRepository.save(driver);
+        Driver driver = save(name, email, password);
 
         return createResponse(driver, true);
+    }
+
+    private Driver save(String name, String email, String password) {
+        return driverRepository.save(createDriver(name, email, password));
     }
 
     private static SavedInfo createResponse(Driver driver, Boolean registered) {

@@ -23,9 +23,7 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
-
     private Long busId;
-
     private Long stationId;
 
     @CreationTimestamp

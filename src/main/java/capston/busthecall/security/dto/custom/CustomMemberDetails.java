@@ -41,10 +41,6 @@ public class CustomMemberDetails implements CustomDetails {
         return member.getName();
     }
 
-    public String getPhoneNumber() {
-        return member.getPhoneNumber();
-    }
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
