@@ -3,6 +3,7 @@ package capston.busthecall.domain;
 
 import capston.busthecall.domain.status.BoardingStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,29 +21,12 @@ public class Member {
 
     private String password;
     private String name;
-    private String phoneNumber;
 
     @Column(unique = true)
     private String email;
 
     @Enumerated(EnumType.STRING)
     private BoardingStatus status;
-
-
-    public boolean isPassword(String target)
-    {
-        return password.equals(target);
-    }
-    @Builder
-    public Member(String name, String password, String phoneNumber, String email, BoardingStatus status
-    ) {
-        this.name =name;
-        this.password =password;
-        this.phoneNumber=phoneNumber;
-        this.email =email;
-        this.status = status;
-
-    }
 
     @Column(nullable = false)
     private Boolean deleted = false;

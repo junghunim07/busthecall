@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 public class CreateReservationRequest {
 
     private Long busId;
-
     private Long stationId;
 
 }

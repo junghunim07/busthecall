@@ -12,6 +12,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 다릅니다."),
     NOT_ROLE_IN_EMAIL(HttpStatus.BAD_REQUEST, "이 이메일은 회원이 아닙니다."),
     MULTI_ROLE_IN_EMAIL(HttpStatus.BAD_REQUEST, "이 이메일은 다중 회원입니다."),
+    NOT_FOUND_RESERVATION(HttpStatus.NOT_FOUND, "not exist reservation"),
     ROUTE_ENCODING_ERROR(HttpStatus.CONFLICT, "route encoding error"),
     ROUTE_NOT_EXIST(HttpStatus.BAD_REQUEST, "route does not exist"),
     REFRESH_TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "refresh token expired"),

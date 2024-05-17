@@ -8,11 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    Reservation findByMemberId(Long memberId);
+    Optional<Reservation> findByMemberId(Long memberId);
 
     @Query("SELECT COUNT(r) FROM Reservation r WHERE r.stationId = :stationId AND r.status = :status")
     Long countByStationIdAndStatus(Long stationId, DoingStatus status);
