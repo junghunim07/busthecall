@@ -43,7 +43,7 @@ public class SavedUserService {
     }
 
     private Long validateMember(String email) {
-        Optional<Member> source = memberRepository.findByEmailAndDeletedFalse(email);
+        Optional<Member> source = memberRepository.findByEmail(email);
 
         if(source.isPresent()) {
             return source.get().getId();
@@ -53,7 +53,7 @@ public class SavedUserService {
     }
 
     private Member getMember(Long existMember) {
-        return (Member) Objects.requireNonNull(memberRepository.findByIdAndDeletedFalse(existMember).orElse(null));
+        return (Member) Objects.requireNonNull(memberRepository.findById(existMember).orElse(null));
     }
 
 
