@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder(toBuilder = true)
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +27,4 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private BoardingStatus status;
-
-    @Column(nullable = false)
-    private Boolean deleted = false;
-
-    public void delete() {
-        this.deleted = true;
-    }
 }
