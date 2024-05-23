@@ -1,6 +1,7 @@
 package capston.busthecall.controller;
 
 import capston.busthecall.domain.dto.request.RouteBusStopListRequest;
+import capston.busthecall.domain.dto.response.RouteBusStopListResponse;
 import capston.busthecall.exception.AppException;
 import capston.busthecall.route.RouteApiManager;
 import capston.busthecall.route.dto.RouteInfoDTO;
@@ -38,7 +39,7 @@ public class RouteController {
     }
 
     @PostMapping("/list")
-    public ApiResponse<ApiResponse.SuccessBody<List<String>>> routeListInfo(@RequestBody RouteBusStopListRequest dto) {
+    public ApiResponse<ApiResponse.SuccessBody<List<RouteBusStopListResponse>>> routeListInfo(@RequestBody RouteBusStopListRequest dto) {
         try {
             return ApiResponseGenerator.success(routeApiManager.busStopList(routeService.findOne(dto.getName()))
                     , HttpStatus.OK);

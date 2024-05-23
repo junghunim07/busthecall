@@ -65,11 +65,7 @@ public class SecurityConfig {
          * anyRequest().authenticated() -> 나머지 요청에 대해서는 로그인한 사용자만 접근 가능하도록 설정.
          */
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/api/v1/drivers/join").permitAll()
-                .requestMatchers("/api/v1/login", "/reissue").permitAll()
-                .requestMatchers("/api/v1/members/join").permitAll()
-                .requestMatchers("/api/v1/list/*").permitAll()
-                .requestMatchers("/api/v1/reservations/*").permitAll()
+                .requestMatchers("/api/v1/*", "/reissue").permitAll()
                 .anyRequest().authenticated());
 
         //JWTFilter 등록

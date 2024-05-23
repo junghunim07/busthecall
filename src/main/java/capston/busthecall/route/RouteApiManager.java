@@ -1,6 +1,7 @@
 package capston.busthecall.route;
 
 import capston.busthecall.domain.dto.response.BusArrivalInfo;
+import capston.busthecall.domain.dto.response.RouteBusStopListResponse;
 import capston.busthecall.exception.AppException;
 import capston.busthecall.exception.ErrorCode;
 import capston.busthecall.route.dto.RouteInfoDTO;
@@ -62,7 +63,7 @@ public class RouteApiManager {
         }
     }
 
-    public List<String> busStopList(Long routeId) {
+    public List<RouteBusStopListResponse> busStopList(Long routeId) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
         HttpEntity<?> entity = new HttpEntity<>(new HttpHeaders());
@@ -73,15 +74,24 @@ public class RouteApiManager {
             JsonNode rootNode = objectMapper.readTree(response.getBody());
             JsonNode busStopListInRoute = rootNode.path("BUSSTOP_LIST");
 
-            List<String> busStopInfoListInRoute = new ArrayList<>();
+            List<RouteBusStopListResponse> busStopInfoListInRoute = new ArrayList<>();
             if (busStopListInRoute.isArray()) {
                 for (JsonNode node : busStopListInRoute) {
-                    busStopInfoListInRoute.add(node.path("BUSSTOP_NAME").asText());
+                    busStopInfoListInRoute.add(createBusStop(node));
                 }
             }
             return busStopInfoListInRoute;
         } catch (Exception e) {
             throw new AppException(ErrorCode.ROUTE_ENCODING_ERROR, "인코딩 에러");
         }
+    }
+
+    private static RouteBusStopListResponse createBusStop(JsonNode node) {
+
+        return RouteBusStopListResponse.builder()
+                .busStopId(node.path("BUSSTOP_ID").asLong())
+                .busStopName(node.path("BUSSTOP_NAME").asText())
+                .busStopKind(node.path("RETURN_FLAG").asInt())
+                .build();
     }
 }
