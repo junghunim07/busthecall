@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface RouteRepository extends JpaRepository<Route, Long> {
 
     Optional<Route> findById(Long routeId);
-    @Query("select r from Route r where r.name like %?1%")
+
     Optional<Route> findByName(String routeName);
 }

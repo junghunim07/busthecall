@@ -28,7 +28,7 @@ public class BusArrivalInfoController {
     private final TokenResolver tokenResolver;
     @GetMapping("/{uuId}")
     public ApiResponse<ApiResponse.SuccessBody<List<BusArrivalInfo>>> getBusArrivalInfo(@PathVariable("uuId") String uuId, HttpServletRequest request) {
-        Long memberId = findMemberByToken(request);
+        //Long memberId = findMemberByToken(request);
         try {
             Long stationId = beaconService.excute(uuId);
             List<BusArrivalInfo> busArrivalInfos = openApiManager.fetch(stationId);
