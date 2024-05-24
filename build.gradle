@@ -29,6 +29,10 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	//firebase : okhttp 요청 보내기 편리함을 위해
+	implementation 'com.google.firebase:firebase-admin:6.8.1'
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+
 	implementation 'io.netty:netty-all:4.1.82.Final'
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
