@@ -12,6 +12,7 @@ spring.profiles.include=API-KEY
 application.properties
 application.yml
 application-API-KEY.properties
+firebase_service_key.json
 
 src/main/resources/docker-compose.yml
 

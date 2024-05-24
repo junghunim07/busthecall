@@ -20,6 +20,7 @@ public class Driver {
     private String name;
     private String email;
     private String password;
+    private String firebase;
 
     @OneToOne(mappedBy = "driver", fetch = FetchType.LAZY)
     private Bus bus;

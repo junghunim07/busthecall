@@ -27,7 +27,7 @@ public class DriverController {
 
     @PostMapping("/join")
     public ApiResponse<ApiResponse.SuccessBody<SavedInfo>> join(@RequestBody JoinRequest dto) {
-        SavedInfo driver = driverService.join(dto.getName(), dto.getEmail(), dto.getPassword());
+        SavedInfo driver = driverService.join(dto.getName(), dto.getEmail(), dto.getPassword(), dto.getFirebase());
 
         if (!driver.getIsRegistered()) {
             log.info("Driver is Already Existed");
