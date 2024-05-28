@@ -5,6 +5,7 @@ import capston.busthecall.manager.OpenApiManager;
 import capston.busthecall.repository.BeaconRepository;
 import capston.busthecall.security.token.TokenResolver;
 import capston.busthecall.service.BeaconService;
+import capston.busthecall.service.BusService;
 import capston.busthecall.support.ApiResponse;
 import capston.busthecall.support.ApiResponseGenerator;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,9 @@ import java.util.List;
 @Slf4j
 public class BusArrivalInfoController {
 
-
     private final OpenApiManager openApiManager;
     private final BeaconService beaconService;
+    private final BusService busService;
     private final TokenResolver tokenResolver;
     @GetMapping("/{uuId}")
     public ApiResponse<ApiResponse.SuccessBody<List<BusArrivalInfo>>> getBusArrivalInfo(@PathVariable("uuId") String uuId, HttpServletRequest request) {
@@ -32,6 +33,7 @@ public class BusArrivalInfoController {
         try {
             Long stationId = beaconService.excute(uuId);
             List<BusArrivalInfo> busArrivalInfos = openApiManager.fetch(stationId);
+            busService.save(busArrivalInfos);
             return ApiResponseGenerator.success(busArrivalInfos, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error fetching bus arrival information", e);
