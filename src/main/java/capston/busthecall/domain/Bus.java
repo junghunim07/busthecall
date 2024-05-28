@@ -1,22 +1,29 @@
 package capston.busthecall.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Bus {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "busId")
+    @Id @Column(name = "busId")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver")
+    @JoinColumn(name = "driverId")
     private Driver driver;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "routeId")
     private Route route;
+
+    private int rideOn;
+    private int rideOff;
 }

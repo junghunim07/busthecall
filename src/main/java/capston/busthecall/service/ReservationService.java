@@ -1,8 +1,6 @@
 package capston.busthecall.service;
 
 
-import capston.busthecall.domain.Bus;
-import capston.busthecall.domain.Driver;
 import capston.busthecall.domain.Member;
 import capston.busthecall.domain.Reservation;
 import capston.busthecall.domain.dto.response.CountReservationInfo;
@@ -12,8 +10,6 @@ import capston.busthecall.domain.status.DoingStatus;
 import capston.busthecall.domain.dto.request.CreateReservationRequest;
 import capston.busthecall.exception.AppException;
 import capston.busthecall.exception.ErrorCode;
-import capston.busthecall.repository.BusRepository;
-import capston.busthecall.repository.DriverRepository;
 import capston.busthecall.repository.MemberRepository;
 import capston.busthecall.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +26,11 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final MemberRepository memberRepository;
-    private final BusRepository busRepository;
-    private final DriverRepository driverRepository;
+    private final BusService busService;
+
+    private final int RESERVATION_CONFIRM = 1;
+    private final int RESERVATION_CANCEL = -1;
+    private final int ZERO = 0;
     LocalDateTime now = LocalDateTime.now();
     @Transactional
     public ReservationResponse rideReservation(CreateReservationRequest request, Long memberId) {
@@ -46,6 +45,7 @@ public class ReservationService {
     public ReservationResponse dropReservation(CreateReservationRequest request, Long memberId) {
 
         Reservation reservation = createReservation(request, memberId, DoingStatus.DROP);
+        busService.update(reservation.getBusId(), RESERVATION_CONFIRM, ZERO);
         reservationRepository.save(reservation);
 
         return createResponse(reservation);
@@ -54,13 +54,11 @@ public class ReservationService {
 
     @Transactional
     public DeletedReservationInfo cancel(Long memberId) {
-        Optional<Reservation> reservation = reservationRepository.findByMemberId(memberId);
+        Reservation reservation = getReservation(memberId);
 
-        if (reservation.isEmpty()) {
-            throw new AppException(ErrorCode.NOT_FOUND_RESERVATION, "not existed reservation");
-        }
+        updateCount(reservation);
+        reservationRepository.delete(reservation);
 
-        reservationRepository.delete(reservation.get());
         return DeletedReservationInfo.builder()
                 .isCancel(true)
                 .build();
@@ -75,7 +73,6 @@ public class ReservationService {
                 .onboard(countBoard)
                 .offboard(countDrop)
                 .build();
-
     }
 
     private ReservationResponse createResponse(Reservation reservation) {
@@ -98,5 +95,23 @@ public class ReservationService {
                 .status(status)
                 .build()).orElse(null);
 
+    }
+
+    private void updateCount(Reservation reservation) {
+        if (reservation.getStatus().equals(DoingStatus.BOARD)) {
+            busService.update(reservation.getBusId(), RESERVATION_CANCEL, ZERO);
+        }
+        if (reservation.getStatus().equals(DoingStatus.DROP)) {
+            busService.update(reservation.getBusId(), ZERO, RESERVATION_CANCEL);
+        }
+    }
+
+    private Reservation getReservation(Long memberId) {
+        Optional<Reservation> reservationOptional = reservationRepository.findByMemberId(memberId);
+
+        if (reservationOptional.isEmpty()) {
+            throw new AppException(ErrorCode.NOT_FOUND_RESERVATION, "not existed reservation");
+        }
+        return reservationOptional.get();
     }
 }
