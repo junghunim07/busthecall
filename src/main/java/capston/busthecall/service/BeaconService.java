@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -21,5 +23,9 @@ public class BeaconService {
         Beacon beacon = beaconRepository.findBeaconByUuId(uuId);
 
         return beacon.getStationId();
+    }
+
+    public List<Beacon> findAll() {
+        return beaconRepository.findAll();
     }
 }
