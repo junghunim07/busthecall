@@ -24,7 +24,7 @@ public class Reservation {
     @JoinColumn(name = "memberId")
     private Member member;
     private Long busId;
-    private Long stationId;
+    private String stationName;
 
     @CreationTimestamp
     @Column(name = "reserveTime")
@@ -34,13 +34,12 @@ public class Reservation {
     private DoingStatus status;
 
     @Builder
-    public Reservation(Member member, Long busId, LocalDateTime reserveTime, Long stationId, DoingStatus status)
+    public Reservation(Member member, Long busId, LocalDateTime reserveTime, String stationName, DoingStatus status)
     {
         this.member =member;
         this.busId = busId;
         this.reserveTime = reserveTime;
-        this.stationId = stationId;
+        this.stationName = stationName;
         this.status = status;
     }
-
 }

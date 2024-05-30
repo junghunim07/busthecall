@@ -13,6 +13,6 @@ public class ReservationResponse {
 
     private Long reservationId;
     private String memberName;
-    private String busName;
+    private String routeName;
     private String stationName;
 }

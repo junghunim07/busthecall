@@ -15,6 +15,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Optional<Reservation> findByMemberId(Long memberId);
 
-    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.stationId = :stationId AND r.status = :status")
-    Long countByStationIdAndStatus(Long stationId, DoingStatus status);
+    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.stationName = :stationName AND r.status = :status")
+    Long countByStationIdAndStatus(String stationName, DoingStatus status);
 }

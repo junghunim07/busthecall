@@ -2,7 +2,6 @@ package capston.busthecall.controller;
 
 
 import capston.busthecall.domain.dto.request.CreateReservationRequest;
-import capston.busthecall.domain.dto.response.CountReservationInfo;
 import capston.busthecall.domain.dto.response.DeletedReservationInfo;
 import capston.busthecall.domain.dto.response.ReservationResponse;
 import capston.busthecall.exception.AppException;
@@ -28,48 +27,46 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final TokenResolver tokenResolver;
 
-    @PostMapping("/onboard")
-    public ApiResponse<ApiResponse.SuccessBody<ReservationResponse>> reserve(
+    @PostMapping("/ride")
+    public ApiResponse<ApiResponse.SuccessBody<ReservationResponse>> ride(
             @RequestBody @Valid CreateReservationRequest requestData, HttpServletRequest request) {
         Long memberId = findMemberByToken(request);
-        ReservationResponse response = reservationService.rideReservation(requestData, memberId);
-
-        log.info("reservationId={}", response.getReservationId());
-
-        return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.RIDE_RESERVATION_CREATED);
+        try {
+            ReservationResponse response = reservationService.rideReservation(requestData, memberId);
+            log.info("reservationId={}", response.getReservationId());
+            return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.RIDE_RESERVATION_CREATED);
+        } catch (AppException e) {
+            log.info("Onboard Reservation Error", e);
+            return ApiResponseGenerator.success(null, HttpStatus.UNAUTHORIZED, MessageCode.NOT_FOUND_BUS);
+        }
     }
 
-    @GetMapping("/offboard")
+    @GetMapping("/cancel")
     public ApiResponse<ApiResponse.SuccessBody<DeletedReservationInfo>> cancel(HttpServletRequest request) {
         Long memberId = findMemberByToken(request);
 
         try {
             DeletedReservationInfo res = reservationService.cancel(memberId);
-            return ApiResponseGenerator.success(res, HttpStatus.CREATED);
+            return ApiResponseGenerator.success(res, HttpStatus.OK);
         } catch (AppException e) {
             log.info("reserve cancel error : not existed reservation In DB", e);
             return ApiResponseGenerator.success(null, HttpStatus.NOT_FOUND, MessageCode.RIDE_RESERVATION_CREATED);
         }
     }
 
-    @GetMapping("/{stationId}")
-    public ApiResponse<ApiResponse.SuccessBody<CountReservationInfo>> count(
-            @PathVariable Long stationId, HttpServletRequest request) {
-        Long driverId = findMemberByToken(request);
-        CountReservationInfo response = reservationService.count(stationId,driverId);
-
-        return ApiResponseGenerator.success(response, HttpStatus.CREATED);
-    }
-
     @PostMapping("/drop")
     public ApiResponse<ApiResponse.SuccessBody<ReservationResponse>> drop(
             @RequestBody @Valid CreateReservationRequest requestData, HttpServletRequest request) {
         Long memberId = findMemberByToken(request);
-        ReservationResponse response = reservationService.dropReservation(requestData, memberId);
 
-        log.info("reservationId={}",response.getReservationId());
-
-        return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.DROP_RESERVATION_CREATED);
+        try {
+            ReservationResponse response = reservationService.dropReservation(requestData, memberId);
+            log.info("reservationId={}",response.getReservationId());
+            return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.DROP_RESERVATION_CREATED);
+        } catch (AppException e) {
+            log.info("Drop Reservation Error", e);
+            return ApiResponseGenerator.success(null, HttpStatus.UNAUTHORIZED, MessageCode.NOT_FOUND_BUS);
+        }
     }
 
     private Long findMemberByToken(HttpServletRequest request) {
