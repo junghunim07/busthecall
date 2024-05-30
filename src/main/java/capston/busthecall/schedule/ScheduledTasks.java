@@ -28,7 +28,7 @@ public class ScheduledTasks {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final HashMap<Long, List<Long>> check = new HashMap<>();
 
-    @Scheduled(fixedRate = 10000)
+    //@Scheduled(fixedRate = 10000)
     public void fetchBusArrivalInfo() throws IOException {
         List<Beacon> beacons = beaconService.findAll();
 
