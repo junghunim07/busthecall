@@ -3,6 +3,8 @@ package capston.busthecall.service;
 import capston.busthecall.domain.Bus;
 import capston.busthecall.domain.Driver;
 import capston.busthecall.domain.dto.response.BusArrivalInfo;
+import capston.busthecall.exception.AppException;
+import capston.busthecall.exception.ErrorCode;
 import capston.busthecall.manager.dto.BusInfoDto;
 import capston.busthecall.repository.BusRepository;
 import capston.busthecall.repository.RouteRepository;
@@ -23,22 +25,14 @@ public class BusService {
     private final RouteRepository routeRepository;
 
     @Transactional
-    public void save(List<BusArrivalInfo> busList) {
+    public Bus save(Long driverId, List<BusArrivalInfo> arrivalInfos, List<BusInfoDto> busInfos) {
 
-        for (BusArrivalInfo bus : busList) {
+        BusInfoDto busInfo = getBusInfo(arrivalInfos, busInfos);
+        Bus bus = create(driverService.findOne(driverId), busInfo.getBusId()
+                , busInfo.getRouteId(), busInfo.getBusNumber(), 0, 0);
+        busRepository.save(bus);
 
-            if (checkValidation(bus)) {
-                busRepository.save(create(bus.getBusId(), bus.getLineId(), 0, 0));
-            }
-        }
-    }
-
-    private boolean checkValidation(BusArrivalInfo bus) {
-
-        if (busRepository.findById(bus.getBusId()).isEmpty()) {
-            return true;
-        }
-        return false;
+        return bus;
     }
 
     @Transactional
@@ -46,31 +40,22 @@ public class BusService {
         Optional<Bus> bus = busRepository.findById(busId);
 
         if (bus.isPresent()) {
-            Bus updateBus = create(bus.get().getId(), bus.get().getRoute().getId(),
-                    bus.get().getRideOn() - updateOn, bus.get().getRideOff() - updateOff);
+            Bus updateBus = create(bus.get().getDriver(), bus.get().getId(), bus.get().getRoute().getId(),
+                    bus.get().getBusNumber(),bus.get().getRideOn() - updateOn
+                    , bus.get().getRideOff() - updateOff);
 
             busRepository.save(updateBus);
         }
     }
 
     @Transactional
-    public Bus matchBusAndDriver(List<BusInfoDto> list, Long driverId) {
+    public void finish(Long busId) {
+        Optional<Bus> bus = busRepository.findById(busId);
 
-        Bus bus = findOne(list);
-
-        if (bus.getDriver() == null) {
-            Driver driver = driverService.findOne(driverId);
-
-            if (driver == null) {
-                throw  new IllegalStateException("Invalid driverId: " + driverId);
-            }
-
-            Bus updateBus = matchUpdateBus(bus, driver);
-            busRepository.save(updateBus);
-
-            return updateBus;
+        if (bus.isEmpty()) {
+            throw new AppException(ErrorCode.NOT_FOUND_OPERATING_BUS, "not operating bus");
         } else {
-            throw new IllegalStateException("The bus already has a driver.");
+            busRepository.delete(bus.get());
         }
     }
 
@@ -78,35 +63,28 @@ public class BusService {
         return busRepository.findById(busId).orElse(null);
     }
 
-    private Bus findOne(List<BusInfoDto> list) {
-
-        Optional<Bus> bus = Optional.empty();
-
-        for (BusInfoDto dto : list) {
-            bus = busRepository.findById(dto.getBusId());
-        }
-
-        return bus.orElse(null);
-    }
-
-    private Bus create(Long busId, Long routeId, int on, int off) {
+    private Bus create(Driver driver, Long busId, Long routeId, String busNumber, int on, int off) {
 
         return Bus.builder()
                 .id(busId)
+                .driver(driver)
                 .route(routeRepository.findById(routeId).orElse(null))
+                .busNumber(busNumber)
                 .rideOn(on)
                 .rideOff(off)
                 .build();
     }
 
-    private Bus matchUpdateBus(Bus bus, Driver driver) {
-        return Bus.builder()
-                .id(bus.getId())
-                .route(bus.getRoute())
-                .driver(driver)
-                .busNumber(bus.getBusNumber())
-                .rideOn(bus.getRideOn())
-                .rideOff(bus.getRideOff())
-                .build();
+    private BusInfoDto getBusInfo(List<BusArrivalInfo> arrivalInfos, List<BusInfoDto> busInfos) {
+
+        BusInfoDto dto = new BusInfoDto();
+        for (BusArrivalInfo arrivalInfo : arrivalInfos) {
+            for (BusInfoDto busInfo : busInfos) {
+                if (arrivalInfo.getBusId().equals(busInfo.getBusId())) {
+                    dto = busInfo;
+                }
+            }
+        }
+        return dto;
     }
 }
