@@ -1,22 +1,28 @@
 package capston.busthecall.controller;
 
+import capston.busthecall.domain.Beacon;
 import capston.busthecall.domain.Bus;
 import capston.busthecall.domain.dto.request.OperateInfoRequest;
+import capston.busthecall.domain.dto.response.BusArrivalInfo;
 import capston.busthecall.domain.dto.response.OperateInfoResponse;
+import capston.busthecall.exception.AppException;
 import capston.busthecall.manager.BusApiManager;
+import capston.busthecall.manager.OpenApiManager;
 import capston.busthecall.manager.dto.BusInfoDto;
 import capston.busthecall.security.token.TokenResolver;
+import capston.busthecall.service.BeaconService;
 import capston.busthecall.service.BusService;
 import capston.busthecall.service.RouteService;
 import capston.busthecall.support.ApiResponse;
 import capston.busthecall.support.ApiResponseGenerator;
+import capston.busthecall.support.MessageCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -28,32 +34,45 @@ public class BusController {
     private final TokenResolver tokenResolver;
     private final RouteService routeService;
     private final BusService busService;
+    private final BeaconService beaconService;
     private final BusApiManager busApiManager;
+    private final OpenApiManager openApiManager;
 
     /**
      * 버스 객체 생성은 고민해봐야 할듯.
      * 버스 객체는 버스 기사가 운행 시 -> 객체 생성.
      * 생성된 버스 객체는 예약을 할 수 있도록 DB에 데이터 저장.
       */
-    /*@GetMapping
-    public ApiResponse<ApiResponse.SuccessBody<>> busInformation() {
-
-    }*/
-
     @PostMapping("/operate")
     public ApiResponse<ApiResponse.SuccessBody<OperateInfoResponse>> operate(
             @RequestBody OperateInfoRequest dto, HttpServletRequest request) {
 
         Long driverId = findDriverByToken(request);
-        Long routeId = routeService.findOne(dto.getRouteName());
-        List<BusInfoDto> busInfo = busApiManager.getBusNumber(routeId);
+        List<BusInfoDto> busInfos = busApiManager.getBusNumber(routeService.findOne(dto.getRouteName()));
+        List<Beacon> beacons = beaconService.findAll();
+        List<BusArrivalInfo> busArrivalInfos = new ArrayList<>();
+
+        for (Beacon beacon : beacons) {
+            busArrivalInfos = openApiManager.fetch(beacon.getStationId());
+        }
 
         try {
-            Bus bus = busService.matchBusAndDriver(busInfo, driverId);
-            return ApiResponseGenerator.success(createResponse(bus), HttpStatus.OK);
+            return ApiResponseGenerator.success(createResponse(busService
+                    .save(driverId, busArrivalInfos, busInfos)), HttpStatus.OK);
         } catch (Exception e) {
             log.info("bus operate Controller Error");
             return null;
+        }
+    }
+
+    @GetMapping("/finish/{busId}")
+    public ApiResponse<ApiResponse.SuccessBody<Void>> finish(@PathVariable("busId") Long busId) {
+        try {
+            busService.finish(busId);
+            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.FINISH_OPERATE_BUS);
+        } catch (AppException e) {
+            log.info("delete bus error in finish method", e);
+            return ApiResponseGenerator.success(HttpStatus.BAD_REQUEST, MessageCode.NOT_FOUND_BUS);
         }
     }
 
