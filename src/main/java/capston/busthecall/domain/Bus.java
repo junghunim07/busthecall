@@ -20,10 +20,11 @@ public class Bus {
     @JoinColumn(name = "driverId")
     private Driver driver;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "routeId")
     private Route route;
 
+    private String busNumber;
     private int rideOn;
     private int rideOff;
 }

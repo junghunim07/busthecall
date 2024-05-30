@@ -15,6 +15,7 @@ public enum ErrorCode {
     NOT_FOUND_RESERVATION(HttpStatus.NOT_FOUND, "not exist reservation"),
     ROUTE_ENCODING_ERROR(HttpStatus.CONFLICT, "route encoding error"),
     ROUTE_NOT_EXIST(HttpStatus.BAD_REQUEST, "route does not exist"),
+    BUS_ENCODING_ERROR(HttpStatus.CONFLICT, "bus api encoding error"),
     REFRESH_TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "refresh token expired"),
     NOT_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "not refresh token"),
     NULL_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "refresh token is null");

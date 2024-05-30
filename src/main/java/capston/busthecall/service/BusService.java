@@ -1,7 +1,9 @@
 package capston.busthecall.service;
 
 import capston.busthecall.domain.Bus;
+import capston.busthecall.domain.Driver;
 import capston.busthecall.domain.dto.response.BusArrivalInfo;
+import capston.busthecall.manager.dto.BusInfoDto;
 import capston.busthecall.repository.BusRepository;
 import capston.busthecall.repository.RouteRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +35,8 @@ public class BusService {
 
     private boolean checkValidation(BusArrivalInfo bus) {
 
-        if (bus.getShortLineName().equals("진월07")) {
-            if (busRepository.findById(bus.getBusId()).isEmpty()) {
-                return true;
-            }
+        if (busRepository.findById(bus.getBusId()).isEmpty()) {
+            return true;
         }
         return false;
     }
@@ -53,19 +53,60 @@ public class BusService {
         }
     }
 
+    @Transactional
+    public Bus matchBusAndDriver(List<BusInfoDto> list, Long driverId) {
+
+        Bus bus = findOne(list);
+
+        if (bus.getDriver() == null) {
+            Driver driver = driverService.findOne(driverId);
+
+            if (driver == null) {
+                throw  new IllegalStateException("Invalid driverId: " + driverId);
+            }
+
+            Bus updateBus = matchUpdateBus(bus, driver);
+            busRepository.save(updateBus);
+
+            return updateBus;
+        } else {
+            throw new IllegalStateException("The bus already has a driver.");
+        }
+    }
+
     public Bus findOne(Long busId) {
         return busRepository.findById(busId).orElse(null);
     }
 
-    // 드라이버 매칭에 대해서 고민해 봐야함.
+    private Bus findOne(List<BusInfoDto> list) {
+
+        Optional<Bus> bus = Optional.empty();
+
+        for (BusInfoDto dto : list) {
+            bus = busRepository.findById(dto.getBusId());
+        }
+
+        return bus.orElse(null);
+    }
+
     private Bus create(Long busId, Long routeId, int on, int off) {
 
         return Bus.builder()
                 .id(busId)
-                .driver(driverService.findOne(1L))
                 .route(routeRepository.findById(routeId).orElse(null))
                 .rideOn(on)
                 .rideOff(off)
+                .build();
+    }
+
+    private Bus matchUpdateBus(Bus bus, Driver driver) {
+        return Bus.builder()
+                .id(bus.getId())
+                .route(bus.getRoute())
+                .driver(driver)
+                .busNumber(bus.getBusNumber())
+                .rideOn(bus.getRideOn())
+                .rideOff(bus.getRideOff())
                 .build();
     }
 }

@@ -80,12 +80,18 @@ public class ReservationService {
         return ReservationResponse.builder()
                 .reservationId(reservation.getId())
                 .memberName(reservation.getMember().getName())
+                .stationName(reservation.getStationId().toString())
+                .busName(reservation.getBusId().toString())
                 .build();
     }
 
     private Reservation createReservation(CreateReservationRequest request, Long memberId, DoingStatus status) {
 
         Optional<Member> member = memberRepository.findById(memberId);
+
+        if (busService.findOne(request.getBusId()) == null) {
+            throw new IllegalStateException("not operating Bus");
+        }
 
         return member.map(value -> Reservation.builder()
                 .member(value)

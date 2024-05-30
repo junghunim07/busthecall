@@ -26,24 +26,16 @@ public class BusArrivalInfoController {
     private final OpenApiManager openApiManager;
     private final BeaconService beaconService;
     private final BusService busService;
-    private final TokenResolver tokenResolver;
+
     @GetMapping("/{uuId}")
-    public ApiResponse<ApiResponse.SuccessBody<List<BusArrivalInfo>>> getBusArrivalInfo(@PathVariable("uuId") String uuId, HttpServletRequest request) {
-        //Long memberId = findMemberByToken(request);
+    public ApiResponse<ApiResponse.SuccessBody<List<BusArrivalInfo>>> getBusArrivalInfo(@PathVariable("uuId") String uuId) {
         try {
             Long stationId = beaconService.excute(uuId);
             List<BusArrivalInfo> busArrivalInfos = openApiManager.fetch(stationId);
-            busService.save(busArrivalInfos);
             return ApiResponseGenerator.success(busArrivalInfos, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error fetching bus arrival information", e);
             return null;
         }
     }
-
-    private Long findMemberByToken(HttpServletRequest request) {
-        String authorization = request.getHeader("access");
-        return tokenResolver.getId(authorization);
-    }
-
 }
