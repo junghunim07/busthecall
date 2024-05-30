@@ -3,7 +3,6 @@ package capston.busthecall.service;
 
 import capston.busthecall.domain.Member;
 import capston.busthecall.domain.Reservation;
-import capston.busthecall.domain.dto.response.CountReservationInfo;
 import capston.busthecall.domain.dto.response.DeletedReservationInfo;
 import capston.busthecall.domain.dto.response.ReservationResponse;
 import capston.busthecall.domain.status.DoingStatus;
@@ -56,22 +55,11 @@ public class ReservationService {
     public DeletedReservationInfo cancel(Long memberId) {
         Reservation reservation = getReservation(memberId);
 
-        updateCount(reservation);
+        updateCancelCount(reservation);
         reservationRepository.delete(reservation);
 
         return DeletedReservationInfo.builder()
                 .isCancel(true)
-                .build();
-    }
-
-    @Transactional
-    public CountReservationInfo count(Long stationId, Long driverId) {
-        Long countBoard = reservationRepository.countByStationIdAndStatus(stationId, DoingStatus.BOARD);
-        Long countDrop = reservationRepository.countByStationIdAndStatus(stationId, DoingStatus.DROP);
-
-        return CountReservationInfo.builder()
-                .onboard(countBoard)
-                .offboard(countDrop)
                 .build();
     }
 
@@ -80,8 +68,8 @@ public class ReservationService {
         return ReservationResponse.builder()
                 .reservationId(reservation.getId())
                 .memberName(reservation.getMember().getName())
-                .stationName(reservation.getStationId().toString())
-                .busName(reservation.getBusId().toString())
+                .stationName(reservation.getStationName())
+                .routeName(busService.findOne(reservation.getBusId()).getRoute().getName())
                 .build();
     }
 
@@ -90,20 +78,19 @@ public class ReservationService {
         Optional<Member> member = memberRepository.findById(memberId);
 
         if (busService.findOne(request.getBusId()) == null) {
-            throw new IllegalStateException("not operating Bus");
+            throw new AppException(ErrorCode.NOT_FOUND_OPERATING_BUS, "not operating Bus");
         }
 
         return member.map(value -> Reservation.builder()
                 .member(value)
                 .busId(request.getBusId())
-                .stationId(request.getStationId())
+                .stationName(request.getStationName())
                 .reserveTime(LocalDateTime.now())
                 .status(status)
                 .build()).orElse(null);
-
     }
 
-    private void updateCount(Reservation reservation) {
+    private void updateCancelCount(Reservation reservation) {
         if (reservation.getStatus().equals(DoingStatus.BOARD)) {
             busService.update(reservation.getBusId(), RESERVATION_CANCEL, ZERO);
         }
