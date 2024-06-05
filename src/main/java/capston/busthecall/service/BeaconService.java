@@ -25,6 +25,10 @@ public class BeaconService {
         return beacon.getStationId();
     }
 
+    public Beacon findOne(Long stationId) {
+        return beaconRepository.findBeaconByStationId(stationId).orElse(null);
+    }
+
     public List<Beacon> findAll() {
         return beaconRepository.findAll();
     }

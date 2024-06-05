@@ -58,6 +58,20 @@ public class OpenApiManager {
     }
 
     private BusArrivalInfo parseBusArrivalInfo(JsonNode node) {
+        String routeName = node.path("SHORT_LINE_NAME").asText();
+
+        if (routeName.equals("진월07")) {
+            return BusArrivalInfo.builder()
+                    .busId(node.path("BUS_ID").asLong())
+                    .remainStop(node.path("REMAIN_STOP").asInt())
+                    .nowBusStopId(node.path("CURR_STOP_ID").asLong())
+                    .busstopName(node.path("BUSSTOP_NAME").asText())
+                    .shortLineName(routeName)
+                    .remainMin(node.path("REMAIN_MIN").asLong() * 60)
+                    .lineId(node.path("LINE_ID").asLong())
+                    .arriveFlag(node.path("ARRIVE_FLAG").asInt())
+                    .build();
+        }
         return BusArrivalInfo.builder()
                 .busId(node.path("BUS_ID").asLong())
                 .remainStop(node.path("REMAIN_STOP").asInt())

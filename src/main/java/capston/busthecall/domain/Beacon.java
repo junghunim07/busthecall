@@ -13,8 +13,7 @@ public class Beacon {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="beaconId")
     private Long id;
-
     private String uuId;
-
     private Long stationId;
+    private String stationName;
 }
