@@ -14,6 +14,7 @@ public enum ErrorCode {
     MULTI_ROLE_IN_EMAIL(HttpStatus.BAD_REQUEST, "이 이메일은 다중 회원입니다."),
     NOT_FOUND_RESERVATION(HttpStatus.NOT_FOUND, "not exist reservation"),
     NOT_FOUND_OPERATING_BUS(HttpStatus.UNAUTHORIZED, "not operating bus"),
+    PREDICT_TIME_REQUEST_ERROR(HttpStatus.CONFLICT, "predict time error"),
     ROUTE_ENCODING_ERROR(HttpStatus.CONFLICT, "route encoding error"),
     ROUTE_NOT_EXIST(HttpStatus.BAD_REQUEST, "route does not exist"),
     BUS_ENCODING_ERROR(HttpStatus.CONFLICT, "bus api encoding error"),
