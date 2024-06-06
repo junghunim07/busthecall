@@ -26,5 +26,6 @@ public class FcmMessage {
     public static class Notification {
         private String title;
         private String body;
+        private String sound;
     }
 }

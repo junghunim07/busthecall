@@ -45,6 +45,7 @@ public class FirebaseCloudMessageService {
                         .notification(FcmMessage.Notification.builder()
                                 .title(title)
                                 .body(body)
+                                .sound("Unibus_알림.mp3")
                                 .build())
                         .build())
                 .build();

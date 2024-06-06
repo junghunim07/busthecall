@@ -39,14 +39,14 @@ public class ScheduledTasks {
                 init(info);
                 List<Long> stations = check.get(info.getBusId());
 
-                checkExistBeforePushAlarm(beacon, info, stations);
+                checkExistBeforePushAlarm(beacon, info, stations, beacon.getStationName());
             }
         }
     }
 
-    private void checkExistBeforePushAlarm(Beacon beacon, BusArrivalInfo info, List<Long> stations) throws IOException {
+    private void checkExistBeforePushAlarm(Beacon beacon, BusArrivalInfo info, List<Long> stations, String nowStationName) throws IOException {
         if (!stations.contains(beacon.getStationId())) {
-            callPushLogic(info);
+            callPushLogic(info, nowStationName);
             stations.add(beacon.getStationId());
             check.put(info.getBusId(), stations);
 
@@ -62,14 +62,14 @@ public class ScheduledTasks {
         }
     }
 
-    private void callPushLogic(BusArrivalInfo info) throws IOException {
+    private void callPushLogic(BusArrivalInfo info, String stationName) throws IOException {
         if (info.getRemainMin() < 3) {
             log.info("Bus is RemainMinStop is in 3 = {}", info.getShortLineName());
             //bus 승하차 인원수 알림 보내는 로직.
             Bus bus = busService.findOne(info.getBusId());
             firebaseCloudMessageService.sendMessageTo(bus.getDriver().getFirebase(),
-                    info.getBusstopName() + "예약", info.getBusstopName()
-                            + ", 승차" + bus.getRideOn() + ", 하차" + bus.getRideOff());
+                    stationName + " 예약 정보",
+                    "승차 " + bus.getRideOn() + "명, 하차 " + bus.getRideOff() + "명");
         }
     }
 }
