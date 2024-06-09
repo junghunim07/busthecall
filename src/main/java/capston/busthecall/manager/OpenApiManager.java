@@ -9,7 +9,6 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -75,6 +74,7 @@ public class OpenApiManager {
         return BusArrivalInfo.builder()
                 .busId(node.path("BUS_ID").asLong())
                 .remainStop(node.path("REMAIN_STOP").asInt())
+                .nowBusStopId(node.path("CURR_STOP_ID").asLong())
                 .busstopName(node.path("BUSSTOP_NAME").asText())
                 .shortLineName(node.path("SHORT_LINE_NAME").asText())
                 .remainMin(node.path("REMAIN_MIN").asLong())

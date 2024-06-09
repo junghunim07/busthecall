@@ -30,7 +30,7 @@ public class AIManager {
 
     public AIManager(@Value("${python}") String url, ObjectMapper objectMapper
             , RouteService routeService, RouteApiManager routeApiManager) {
-        pythonURL = url;
+        pythonURL = url + "/predict_time";
         this.objectMapper = objectMapper;
         this.routeService = routeService;
         this.routeApiManager = routeApiManager;
@@ -49,6 +49,7 @@ public class AIManager {
     private List<BusArrivalInfo> createResponse(List<BusArrivalInfo> infos, PredictTimeResponseDto dto) {
         BusArrivalInfo busInfo = getWantBusInfo(infos);
         infos.remove(busInfo);
+        log.info("PredictTime : {}", dto.getOperationTime());
         infos.add(updateBusInfo(busInfo, dto));
         return infos;
     }
@@ -57,16 +58,13 @@ public class AIManager {
         return BusArrivalInfo.builder()
                 .busId(info.getBusId())
                 .remainStop(info.getRemainStop())
+                .nowBusStopId(info.getNowBusStopId())
                 .busstopName(info.getBusstopName())
                 .shortLineName(info.getShortLineName())
-                .remainMin(calculateRemainMin(info.getRemainMin(), dto))
+                .remainMin(dto.getOperationTime())
                 .lineId(info.getLineId())
                 .arriveFlag(info.getArriveFlag())
                 .build();
-    }
-
-    private Long calculateRemainMin(Long remainMin, PredictTimeResponseDto dto) {
-        return remainMin * 60 - dto.getOperationTime();
     }
 
     private PredictTimeResponseDto sendToPythonServer(List<BusArrivalInfo> infos, String arrivalBusStopName) throws JsonProcessingException {

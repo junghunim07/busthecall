@@ -16,7 +16,7 @@ public class Bus {
     @Id @Column(name = "busId")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "driverId")
     private Driver driver;
 
