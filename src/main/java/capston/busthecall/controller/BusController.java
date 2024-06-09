@@ -42,12 +42,18 @@ public class BusController {
      * 버스 객체 생성은 고민해봐야 할듯.
      * 버스 객체는 버스 기사가 운행 시 -> 객체 생성.
      * 생성된 버스 객체는 예약을 할 수 있도록 DB에 데이터 저장.
-      */
+     */
     @PostMapping("/operate")
     public ApiResponse<ApiResponse.SuccessBody<OperateInfoResponse>> operate(
             @RequestBody OperateInfoRequest dto, HttpServletRequest request) {
 
         Long driverId = findDriverByToken(request);
+
+        if (driverId == null) {
+            log.info("driver error");
+            return ApiResponseGenerator.success(null, HttpStatus.BAD_REQUEST, MessageCode.NOT_FOUND_DRIVER);
+        }
+
         List<BusInfoDto> busInfos = busApiManager.getBusNumber(routeService.findOne(dto.getRouteName()));
         List<Beacon> beacons = beaconService.findAll();
         List<BusArrivalInfo> busArrivalInfos = new ArrayList<>();
@@ -61,7 +67,7 @@ public class BusController {
                     .save(driverId, busArrivalInfos, busInfos)), HttpStatus.OK);
         } catch (Exception e) {
             log.info("bus operate Controller Error");
-            return null;
+            return ApiResponseGenerator.success(null, HttpStatus.OK, MessageCode.NOT_FOUND_BUS);
         }
     }
 

@@ -1,70 +1,47 @@
 package capston.busthecall.fcm;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Slf4j
-@Component
+@Service
 @RequiredArgsConstructor
 public class FirebaseCloudMessageService {
 
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/busthecall-62ef5/messages:send";
     private final ObjectMapper objectMapper;
+    private final FirebaseMessaging firebaseMessaging;
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = createMessage(targetToken, title, body);
+    public void sendMessageTo(String targetToken, String title, String body) {
+        log.info("correct send message to");
 
-        OkHttpClient client = new OkHttpClient();
-        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
-
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(requestBody)
-                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(body)
                 .build();
 
-        Response response = client.newCall(request).execute();
-        log.info("message response = {}", response);
+        Message message = Message.builder()
+                .setToken(targetToken)
+                .setNotification(notification)
+                .setApnsConfig(createApns())
+                .build();
+        try {
+            firebaseMessaging.send(message);
+        } catch (FirebaseMessagingException e) {
+            log.info("알림 보내기를 실패하였습니다. targetToken : {}", targetToken);
+        }
     }
 
-    private String createMessage(String targetToken, String title, String body) throws JsonProcessingException {
-        FcmMessage fcmMessage = FcmMessage.builder()
-                .message(FcmMessage.Message.builder()
-                        .token(targetToken)
-                        .notification(FcmMessage.Notification.builder()
-                                .title(title)
-                                .body(body)
-                                .sound("Unibus_알림.mp3")
-                                .build())
+    private ApnsConfig createApns() {
+        return ApnsConfig.builder()
+                .putHeader("apns-priority", "10")
+                .setAps(Aps.builder()
+                        .setBadge(1)
+                        .setSound("Unibus_알림.wav")
                         .build())
                 .build();
-
-        log.info("message title = {}, body = {}"
-                , fcmMessage.getMessage().getNotification().getTitle()
-                , fcmMessage.getMessage().getNotification().getBody());
-
-        return objectMapper.writeValueAsString(fcmMessage);
-    }
-
-    private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "firebase/firebase_service_key.json";
-
-        GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
-                .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
-
-        googleCredentials.refreshIfExpired();
-        return googleCredentials.getAccessToken().getTokenValue();
     }
 }
