@@ -1,7 +1,7 @@
 ## 캡스톤 디자인
 ### 시스템 소개
 - 인공지능 모델을 이용한 버스 도착 예정 시간 예측
-- GPS의 문제점을 보완하기 위해 비콘을 이용해 사용자 위치 추정
+- GPS의 문제점을 보완하기 위해 비콘을 사용하여 사용자 위치 추정
 - 무정차를 방지하기 위해 기사님에게 해당 정류장 승차 인원 정보 제공
 - 버스 내 사고를 막기 위해 하차를 예약하고 이를 기사님에게 정보 제공
 
@@ -10,7 +10,7 @@
 
 - [기능명세서](https://courageous-asteroid-4e0.notion.site/117b6db294bc81a593edf6b034e399d5?pvs=4)
 
-- [API명세서](https://courageous-asteroid-4e0.notion.site/API-15eb6db294bc812c8a55dec7d53581d6?pvs=4)
+- [API명세서]([https://courageous-asteroid-4e0.notion.site/API-15eb6db294bc812c8a55dec7d53581d6?pvs=4](https://courageous-asteroid-4e0.notion.site/API-117b6db294bc81f3a162cf701fd3ae92?pvs=4))
 
 -----
 ### 나의 역할
