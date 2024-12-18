@@ -1,27 +1,33 @@
-## 캡스톤 디자인
+## 캡스톤 디자인 팀 프로젝트
+
 ### 시스템 소개
-- 인공지능 모델을 이용한 버스 도착 예정 시간 예측
+
+- 공공데이터 API에서 데이터를 추출하여 학습시킨 인공지능 모델을 이용하여 버스 도착 예정 시간 예측
 - GPS의 문제점을 보완하기 위해 비콘을 사용하여 사용자 위치 추정
 - 무정차를 방지하기 위해 기사님에게 해당 정류장 승차 인원 정보 제공
-- 버스 내 사고를 막기 위해 하차를 예약하고 이를 기사님에게 정보 제공
-
-----
-### 추가 문서
-
-- [기능명세서](https://courageous-asteroid-4e0.notion.site/117b6db294bc81a593edf6b034e399d5?pvs=4)
-
-- [API명세서](https://courageous-asteroid-4e0.notion.site/API-117b6db294bc81f3a162cf701fd3ae92)
+- 버스 내 사고를 막기 위해 자리에 앉아서 애플리케이션 내 하차 버튼을 눌러 하차 예약
+- 기사님에게 해당 정류장 하차 인원 정보 제공
 
 -----
+
 ### 나의 역할
+
 - Spring Security를 이용해 로그인 기능 구현
-- 공공데이터 API를 이용해 필요한 데이터 추출
-- 이 데이터를 인공지능 서버로 넘겨주고 예정 시간 예측 데이터를 받아와서 프론트에 전달
-- 공공데이터에서 받은 데이터 가공
+- API를 받아 데이터 추출
+- 인공지능 서버에게 예측에 필요한 데이터 전달
+- 공공데이터 서버에서 받은 버스 정보 데이터 가공
 - 백엔드 비즈니스 로직 구현
 - DB 설계 및 데이터 관리
 - FCM을 이용해 버스 기사 애플리케이션에 알람 보내기
+
 -----
+
+### 기술
+
+
+
+-----
+
 ### 아키텍처
 - UML 다이어그램
 
@@ -38,7 +44,9 @@
 |<img src="/image/buslist.png" width="650" height="400" />|<img src="/image/cancel.png" width="650" height="400" />|
 |운행 등록|정류장 정보 알림|
 |<img src="/image/operation.png" width="650" height="400" />|<img src="/image/inform.png" width="650" height="400" />|
+
 ----
+
 ### 승객 애플리케이션
 - 계정 생성 및 로그인
 
@@ -65,7 +73,9 @@
 |예약 현황View| 하차 예약 Alert(1)| 하차 예약 Alert(2)|
 
 ----
+
 ### 기사 애플리케이션
+
 - 계정 생성 및 로그인
 
 |<img src="/image/driverAppImage/Picture.png" width="200" height="350" />|<img src="/image/driverAppImage/Picture (1).png" width="200" height="350" />|<img src="/image/driverAppImage/Picture (2).png" width="200" height="350" />|
@@ -77,3 +87,14 @@
 |<img src="/image/driverAppImage/Picture (3).png" width="200" height="350" />|<img src="/image/driverAppImage/Picture (4).png" width="200" height="350" />|<img src="/image/driverAppImage/Picture (5).png" width="200" height="350" />|
 |:---:|:---:|:---:|
 |FirstView|SignupView|LoginView|
+
+
+----
+
+### 추가 문서
+
+- [기능명세서](https://courageous-asteroid-4e0.notion.site/117b6db294bc81a593edf6b034e399d5?pvs=4)
+
+- [API명세서](https://courageous-asteroid-4e0.notion.site/API-117b6db294bc81f3a162cf701fd3ae92?pvs=4)
+
+- [학습 내용](https://www.notion.so/10cb6db294bc80d3aa39da3ae84345e3)
