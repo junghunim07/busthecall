@@ -8,6 +8,56 @@
 - 버스 내 사고를 막기 위해 자리에 앉아서 애플리케이션 내 하차 버튼을 눌러 하차 예약
 - 기사님에게 해당 정류장 하차 인원 정보 제공
 
+----
+
+### 팀 구성
+
+<table style="width: 100%;">
+  		<thead>
+          <tr> 
+      <th style="width: 30%;">직책(Position)</th> 
+      <th style="width: 30%;">성명(Name)</th>
+      <th style="width: 40%">역할(Role)</th>
+    </tr>
+  		</thead>
+  		<tbody>
+          <tr>
+            <th>팀장</th>
+            <th>이현수</th>
+            <th>
+              [IOS] 사용자 인터페이스 설계 및 애플리케이션 개발<br>
+              애플리케이션 디자인
+            </th>
+          </tr>
+          <tr>
+            <th>팀원</th>
+            <th>김진영</th>
+            <th>
+              [Docker] 서버 인프라<br>
+              [Python] 데이터 전처리<br>
+              인공지능 모델 설계 및 구현
+            </th>
+          </tr>
+          <tr>
+            <th>팀원</th>
+            <th>임중훈</th>
+            <th>
+              [SpringBoot] 클라이언트와 서버 통신 환경 구축<br>
+              데이터베이스 설계 및 관리<br>
+              공공데이터 서버 통신<br>
+              공공데이터 버스 데이터 가공<br>
+              [Firebase] 서버 통신
+            </th>
+          </tr>
+  		</tbody>
+    </table>
+
+----
+
+### 사용 기술 스택
+
+
+
 -----
 
 ### 나의 역할
@@ -15,7 +65,7 @@
 - Spring Security를 이용해 로그인 기능 구현
 - API를 받아 데이터 추출
 - 인공지능 서버에게 예측에 필요한 데이터 전달
-- 공공데이터 서버에서 받은 버스 정보 데이터 가공
+- 공공데이터 서버에서 받은 버스 정보 데이터 가공
 - 백엔드 비즈니스 로직 구현
 - DB 설계 및 데이터 관리
 - FCM을 이용해 버스 기사 애플리케이션에 알람 보내기
@@ -92,3 +142,5 @@
 - [API명세서](https://courageous-asteroid-4e0.notion.site/API-117b6db294bc81f3a162cf701fd3ae92?pvs=4)
 
 - [학습 내용](https://www.notion.so/10cb6db294bc80d3aa39da3ae84345e3)
+
+- [최종 논문]()
