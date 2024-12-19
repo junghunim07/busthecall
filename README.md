@@ -11,8 +11,8 @@
 ----
 
 ### 팀 구성
-
-<table style="width: 100%;">
+<div align="center">
+  <table style="width: 100%;">
   		<thead>
           <tr> 
       <th style="width: 30%;">직책(Position)</th> 
@@ -51,6 +51,7 @@
           </tr>
   		</tbody>
     </table>
+</div>
 
 -----
 
